@@ -13,11 +13,11 @@ export default function Home() {
           height={38}
           priority
         />
+        <h1>Stadt in Bewegung</h1>
+        <p>Liste aller Titel der Videos der Sammlung "Stadt in Bewegung"</p>
         <ol>
-          <li>
-            Get started by editing <code>app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
+          <li>ol li element 1</li>
+          <li>ol li element 2</li>
         </ol>
 
         <div className={styles.ctas}>
@@ -34,7 +34,7 @@ export default function Home() {
               width={20}
               height={20}
             />
-            Deploy now
+            Button 1: Deploy now
           </a>
           <a
             href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
@@ -42,7 +42,7 @@ export default function Home() {
             rel="noopener noreferrer"
             className={styles.secondary}
           >
-            Read our docs
+            Button 2: Read our docs
           </a>
         </div>
       </main>
@@ -59,7 +59,7 @@ export default function Home() {
             width={16}
             height={16}
           />
-          Learn
+          Link 1 Learn
         </a>
         <a
           href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
@@ -73,7 +73,7 @@ export default function Home() {
             width={16}
             height={16}
           />
-          Examples
+          Link 2 Examples
         </a>
         <a
           href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
@@ -87,7 +87,7 @@ export default function Home() {
             width={16}
             height={16}
           />
-          Go to nextjs.org →
+          Link 3 Go to nextjs.org →
         </a>
       </footer>
     </div>
