@@ -5,20 +5,11 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
         <h1>Stadt in Bewegung</h1>
         <p>Liste aller Titel der Videos der Sammlung "Stadt in Bewegung"</p>
-        <ol>
-          <li>ol li element 1</li>
-          <li>ol li element 2</li>
-        </ol>
+
+        <ul id="titles-list"></ul> {/* Container to display titles */}
+        <script src="jsonscript.js"></script> {/* Link to the external JavaScript file that accesses the JSON file(s)*/}
 
         <div className={styles.ctas}>
           <a
