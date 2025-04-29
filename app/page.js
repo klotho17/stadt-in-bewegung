@@ -9,8 +9,8 @@ export default function Home() {
         <h1>Stadt in Bewegung</h1>
         <p>Liste aller Titel der Videos der Sammlung Stadt in Bewegung</p>
 
-        <ul id="titles-list"></ul> {/* Container to display titles */}
-        <Script src="jsonscript.js" async></Script> {/* Link to the external JavaScript file that accesses the JSON file(s)*/}
+        <ul id="titles-list"></ul> 
+        <Script src="jsonscript.js" async></Script>
 
         <div className={styles.ctas}>
           <a
