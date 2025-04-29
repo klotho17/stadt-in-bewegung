@@ -6,7 +6,7 @@ export default function Home() {
     <div className={styles.page}>
       <main className={styles.main}>
         <h1>Stadt in Bewegung</h1>
-        <p>Liste aller Titel der Videos der Sammlung "Stadt in Bewegung"</p>
+        <p>Liste aller Titel der Videos der Sammlung Stadt in Bewegung</p>
 
         <ul id="titles-list"></ul> {/* Container to display titles */}
         <script src="jsonscript.js"></script> {/* Link to the external JavaScript file that accesses the JSON file(s)*/}
