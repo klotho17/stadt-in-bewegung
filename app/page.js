@@ -1,5 +1,6 @@
 import Image from "next/image";
 import styles from "./page.module.css";
+import Script from 'next/script'
 
 export default function Home() {
   return (
@@ -9,7 +10,7 @@ export default function Home() {
         <p>Liste aller Titel der Videos der Sammlung Stadt in Bewegung</p>
 
         <ul id="titles-list"></ul> {/* Container to display titles */}
-        <script src="jsonscript.js" async></script> {/* Link to the external JavaScript file that accesses the JSON file(s)*/}
+        <Script src="jsonscript.js" async></Script> {/* Link to the external JavaScript file that accesses the JSON file(s)*/}
 
         <div className={styles.ctas}>
           <a
