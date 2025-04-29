@@ -1,7 +1,7 @@
 // app/your-page/page.js
 'use client'; // Needed since we're using useEffect and client-side features
 
-import { fetchAllTitles } from './utils/jsonDataFetcher';
+import { fetchAllTitles } from './utils/jsonscript';
 import { useEffect, useState } from 'react';
 
 export default function JsonDataPage() {
