@@ -5,9 +5,9 @@ import { yearCorrection } from "./yearcorrection";
 
 // custom titles for missing files to includ them in the visualisation
 export const customTitles = {
-    34: "Custom Title for File 34",
-    38: "Custom Title for File 38",
-    83: "Custom Title for File 83"
+    34: "Missing File 34",
+    38: "Missing File 38",
+    83: "Missing File 83"
 };
 
 // fetching data from the composed URLs
@@ -24,7 +24,8 @@ export async function fetchData(fileNumber) {
         const topics = extractTopics(data.hasOrHadSubject);
 
         return { 
-                id: data["@id"], 
+                id: fileNumber,
+                apiId: data["@id"], 
                 title: data.title, 
                 year: data.created.normalizedDateValue, 
                 topic: topics 
@@ -36,7 +37,7 @@ export async function fetchData(fileNumber) {
 }
 
 // fetching data from the JSON files
-export async function fetchAllTitles() {
+export async function fetchMetadata() {
     const fileNumbers = [];
     
     // including missing files and sub-indices
@@ -63,12 +64,17 @@ export async function fetchAllTitles() {
     return {
         regularItems: results.map((result, index) => ({
             fileNumber: fileNumbers[index],
-            ...(result || { title: "Not available", id: "N/A", year: "Not available", topic: "Not available" }),
+            ...(result || { 
+                title: "Not available", 
+                id: fileNumbers[index],
+                year: "Not available", 
+                topic: "Not available" 
+            }),
         })),
         customItems: Object.entries(customTitles).map(([fileNumber, title]) => ({
             fileNumber,
             title,
-            id: "Custom",
+            id: fileNumber, // Use fileNumber as ID for consistency
             isCustom: true,
             year: "Not available",
             topic: "Not available"

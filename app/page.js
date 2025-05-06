@@ -1,7 +1,7 @@
 // app/your-page/page.js
 'use client'; // Needed since we're using useEffect and client-side features
 
-import { fetchAllTitles } from './utils/jsonscript';
+import { fetchMetadata } from './utils/jsonscript';
 import { createTreemap } from './utils/treemap';
 //import { createTreemap2 } from './utils/treemap2'; //test
 import { prepareTreemapData } from './utils/filtertopics';
@@ -18,12 +18,11 @@ export default function JsonDataPage() {
   const [treemapData, setTreemapData] = useState(null);
   const router = useRouter();
 
-
   useEffect(() => {
     async function loadData() {
       try {
         // Fetch data from the JSON files with function in utils/jsonscript.js
-        const data = await fetchAllTitles(); //change name later to something more suitable!
+        const data = await fetchMetadata(); //change name later to something more suitable!
         // Debug fetched data
         console.log("Fetched data:", data); 
         setTitles(data);
@@ -47,13 +46,13 @@ export default function JsonDataPage() {
   }, []);
 
 // create treemap with function from utils/treemap.js
-useEffect(() => {
-  if (!loading && treemapData && treemapContainerRef.current) {
-    createTreemap("treemap-container", treemapData, (topic) => {
-      router.push(`/themen/${encodeURIComponent(topic)}`);
-    });
-  }
-}, [loading, treemapData, router]);
+  useEffect(() => {
+    if (!loading && treemapData && treemapContainerRef.current) {
+      createTreemap("treemap-container", treemapData, (topic) => {
+        router.push(`/themen/${encodeURIComponent(topic)}`);
+      });
+    }
+  }, [loading, treemapData, router]);
 
 if (loading) return <div>Loading...</div>;
 if (error) return <div>Error: {error}</div>;
@@ -73,7 +72,7 @@ if (error) return <div>Error: {error}</div>;
         {titles?.regularItems.map((item, index) => (
           
           <li key={index} className="p-2 border rounded">
-            File {item.fileNumber}: {item.title} 
+            File {item.id}: {item.title} 
             (ID: {item.id}) 
             (Created in year: {item.year || "N/A or unclear"}) 
             (Topics: {item.topic.length > 0 ? item.topic.join(", ") : "N/A or unclear"})
@@ -82,7 +81,7 @@ if (error) return <div>Error: {error}</div>;
         {/* list irregular items */}
         {titles?.customItems.map((item, index) => (
           <li key={`custom-${index}`} className="p-2 border rounded bg-yellow-50">
-            File {item.fileNumber}: {item.title} (Custom Title)
+            File {item.id}: {item.title} (Custom Title)
           </li>
         ))}
       </ul>
