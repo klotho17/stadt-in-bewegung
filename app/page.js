@@ -3,10 +3,11 @@
 
 import { fetchAllTitles } from './utils/jsonscript';
 import { createTreemap } from './utils/treemap';
-import { createTreemap2 } from './utils/treemap2'; //test
+//import { createTreemap2 } from './utils/treemap2'; //test
 import { prepareTreemapData } from './utils/filtertopics';
 import { useEffect, useRef, useState } from 'react';
-import * as d3 from "d3";
+import { useRouter } from 'next/navigation';
+
 
 export default function JsonDataPage() {
   const [titles, setTitles] = useState(null);
@@ -15,6 +16,8 @@ export default function JsonDataPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [treemapData, setTreemapData] = useState(null);
+  const router = useRouter();
+
 
   useEffect(() => {
     async function loadData() {
@@ -26,6 +29,7 @@ export default function JsonDataPage() {
         setTitles(data);
         
         // get the data for the treemap from function in utils/filtertopics.js
+        //... later i want to use the data from the custom items as well
         const treemapData = prepareTreemapData(data.regularItems);
         setTreemapData(treemapData);
           // check the structure of the treemap data
@@ -45,9 +49,11 @@ export default function JsonDataPage() {
 // create treemap with function from utils/treemap.js
 useEffect(() => {
   if (!loading && treemapData && treemapContainerRef.current) {
-    createTreemap("treemap-container", treemapData);
+    createTreemap("treemap-container", treemapData, (topic) => {
+      router.push(`/themen/${encodeURIComponent(topic)}`);
+    });
   }
-}, [loading, treemapData]);
+}, [loading, treemapData, router]);
 
 if (loading) return <div>Loading...</div>;
 if (error) return <div>Error: {error}</div>;
