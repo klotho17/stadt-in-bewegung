@@ -6,8 +6,8 @@ export function createTreemap(containerId, data, onTopicClick) {
     container.html('');
   
     // Set dimensions
-    const width = 1000;
-    const height = 600;
+    const width = container.node().clientWidth || 800;
+    const height = 500;
     const margin = { top: 20, right: 20, bottom: 20, left: 20 };
   
     // Create SVG
@@ -42,7 +42,7 @@ export function createTreemap(containerId, data, onTopicClick) {
       .attr('fill', d => {
         const color = d3.scaleLinear()
           .domain([0, root.value])
-          .range(['#e0f7fa', '#006064']);
+          .range(['#32a88d', '#9c32a8']);
         return color(d.value);
       })
       .attr('stroke', '#fff')
