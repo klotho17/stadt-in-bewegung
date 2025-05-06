@@ -1,3 +1,5 @@
+// second version of treemap function - not used atm
+
 import * as d3 from 'd3';
 
 export function createTreemap2(containerId, data) {

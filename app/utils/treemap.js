@@ -2,6 +2,14 @@ import * as d3 from "d3";
 
 export function createTreemap(containerId, data) {
     console.log("Creating treemap with data:", data); // Debug log
+    // Check if container exists
+    const container = document.getElementById(containerId);
+    if (!container) {
+      console.error(`Container element with ID "${containerId}" not found`);
+      return;
+    }
+    // Clear previous content
+    container.innerHTML = '';
 
     // Wrap data in a root object with a `children` property
     const root = d3.hierarchy({ children: data })
@@ -12,7 +20,7 @@ export function createTreemap(containerId, data) {
 
     // Create a treemap layout
     const treemapLayout = d3.treemap()
-        .size([800, 600])
+        .size([2000, 1000])
         .padding(2);
 
     treemapLayout(root);
@@ -20,8 +28,8 @@ export function createTreemap(containerId, data) {
     // Create an SVG container
     const svg = d3.select(`#${containerId}`)
         .append("svg")
-        .attr("width", 800)
-        .attr("height", 600);
+        .attr("width", 2000)
+        .attr("height", 1000);
 
     // Add rectangles for each topic
     const nodes = svg.selectAll("g")
