@@ -20,7 +20,7 @@ export function createTreemap(containerId, data) {
 
     // Create a treemap layout
     const treemapLayout = d3.treemap()
-        .size([2000, 1000])
+        .size([1000, 500])
         .padding(2);
 
     treemapLayout(root);
@@ -28,8 +28,8 @@ export function createTreemap(containerId, data) {
     // Create an SVG container
     const svg = d3.select(`#${containerId}`)
         .append("svg")
-        .attr("width", 2000)
-        .attr("height", 1000);
+        .attr("width", 1000)
+        .attr("height", 500);
 
     // Add rectangles for each topic
     const nodes = svg.selectAll("g")

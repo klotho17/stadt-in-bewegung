@@ -19,35 +19,16 @@ export default function JsonDataPage() {
   useEffect(() => {
     async function loadData() {
       try {
+        // Fetch data from the JSON files with function in utils/jsonscript.js
         const data = await fetchAllTitles(); //change name later to something more suitable!
-        console.log("Fetched data:", data); // Debug fetched data
+        // Debug fetched data
+        console.log("Fetched data:", data); 
         setTitles(data);
         
-          //tmp test data 
-          /*
-          const testData = [
-            { name: "Jugendbewegung", value: 37 },
-            { name: "Umweltschutz", value: 25 },
-            { name: "Kultur", value: 15 }
-          ];
-          setTreemapData(testData);
-          */
-
-          // Prepare data for the treemap
-          const topicFrequency = {};
-          data.regularItems.forEach(item => {
-            if (Array.isArray(item.topic) && item.topic.length > 0) { // Check if topics is a valid array
-              item.topic.forEach(topic => {
-                topicFrequency[topic] = (topicFrequency[topic] || 0) + 1;
-              });
-            }
-          });
-        
-          const treemapData = Object.entries(topicFrequency).map(([name, value]) => ({ name, value }));
-
-          setTreemapData(treemapData);
+        // get the data for the treemap from function in utils/filtertopics.js
+        const treemapData = prepareTreemapData(data.regularItems);
+        setTreemapData(treemapData);
           // check the structure of the treemap data
-          console.log("treemap data - topicFrequency:", topicFrequency);
           console.log("treemap data - treemapData:", treemapData);
           console.log("TreemapData:", setTreemapData);
 
@@ -70,6 +51,8 @@ useEffect(() => {
 
 if (loading) return <div>Loading...</div>;
 if (error) return <div>Error: {error}</div>;
+
+// ... add resizing function at some point
 
 // Visual Website returns
   return (
