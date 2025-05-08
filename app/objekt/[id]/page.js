@@ -1,11 +1,12 @@
 'use client';
 
 import { fetchMetadata } from '../../utils/jsonscript';
+import { getCachedData, setCachedData } from '../../utils/cache';
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-export default function EntryPage() {
+export default function SingleEntryPage() {
   const { id } = useParams();
   const router = useRouter();
   const [entry, setEntry] = useState(null);
@@ -18,8 +19,14 @@ export default function EntryPage() {
 
   useEffect(() => {
     async function loadData() {
-      const data = await fetchMetadata();
-      //const currentEntry = data.regularItems.find(item => item.id === id);
+      let data = getCachedData();
+      if (!data) {
+        console.log("Fetching data...");
+        data = await fetchMetadata();
+        setCachedData(data);
+      } else {
+      console.log("Using cached data...");
+      }
       
       const currentEntry = [...data.regularItems, ...data.customItems]
           .find(item => item.id === id);
@@ -55,29 +62,25 @@ export default function EntryPage() {
   if (!entry) return <div>Eintrag nicht gefunden</div>;
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">{entry.title}</h1>
+    <div>
+      <h1>{entry.title}</h1>
       
-      <div className="mb-6 p-4 bg-white rounded-lg shadow">
-        <div className="grid grid-cols-2 gap-4 mb-4">
+      <div>
+        <div>
           <div>
-            <h2 className="font-semibold">Datei</h2>
+            <h2>Datei</h2>
             <p>{entry.fileNumber}</p>
           </div>
           <div>
-            <h2 className="font-semibold">Jahr</h2>
+            <h2>Jahr</h2>
             <p>{entry.year || 'N/A'}</p>
           </div>
           {entry.topic?.length > 0 && (
-            <div className="col-span-2">
-              <h2 className="font-semibold">Themen</h2>
-              <div className="flex flex-wrap gap-2 mt-1">
+            <div>
+              <h2>Themen</h2>
+              <div>
                 {entry.topic.map(topic => (
-                  <Link 
-                    key={topic} 
-                    href={`/themen/${encodeURIComponent(topic)}`}
-                    className="px-2 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100"
-                  >
+                  <Link key={topic} href={`/themen/${encodeURIComponent(topic)}`}>
                     {topic}
                   </Link>
                 ))}
@@ -90,21 +93,19 @@ export default function EntryPage() {
       </div>
 
       {/* Adjacent entries navigation */}
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-4">Verwandte Einträge</h2>
+      <div>
+        <h2>Verwandte Einträge</h2>
         
         {entry.year && (
           <>
             {adjacentEntries.prevYear.length > 0 && (
-              <div className="mb-6">
-                <h3 className="font-medium text-lg mb-2">Aus dem Vorjahr ({parseInt(entry.year) - 1})</h3>
-                <ul className="space-y-2">
+              <div>
+                <h3>Aus dem Vorjahr ({parseInt(entry.year) - 1})</h3>
+                <ul>
                   {adjacentEntries.prevYear.map(item => (
                     <li key={item.id}>
                       <Link 
-                        href={`/objekt/${item.id}`}
-                        className="block p-2 border rounded hover:bg-gray-50"
-                      >
+                        href={`/objekt/${item.id}`}>
                         {item.title}
                       </Link>
                     </li>
@@ -114,15 +115,12 @@ export default function EntryPage() {
             )}
 
             {adjacentEntries.sameYear.length > 0 && (
-              <div className="mb-6">
-                <h3 className="font-medium text-lg mb-2">Aus dem gleichen Jahr ({entry.year})</h3>
-                <ul className="space-y-2">
+              <div>
+                <h3>Aus dem gleichen Jahr ({entry.year})</h3>
+                <ul>
                   {adjacentEntries.sameYear.map(item => (
                     <li key={item.id}>
-                      <Link 
-                        href={`/objekt/${item.id}`}
-                        className="block p-2 border rounded hover:bg-gray-50"
-                      >
+                      <Link href={`/objekt/${item.id}`}>
                         {item.title}
                       </Link>
                     </li>
@@ -132,15 +130,12 @@ export default function EntryPage() {
             )}
 
             {adjacentEntries.nextYear.length > 0 && (
-              <div className="mb-6">
-                <h3 className="font-medium text-lg mb-2">Aus dem Folgejahr ({parseInt(entry.year) + 1})</h3>
-                <ul className="space-y-2">
+              <div>
+                <h3>Aus dem Folgejahr ({parseInt(entry.year) + 1})</h3>
+                <ul>
                   {adjacentEntries.nextYear.map(item => (
                     <li key={item.id}>
-                      <Link 
-                        href={`/objekt/${item.id}`}
-                        className="block p-2 border rounded hover:bg-gray-50"
-                      >
+                      <Link href={`/objekt/${item.id}`}>
                         {item.title}
                       </Link>
                     </li>

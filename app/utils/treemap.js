@@ -14,7 +14,7 @@ export function createTreemap(containerId, data, onTopicClick) {
     const svg = container.append('svg')
       .attr('width', width)
       .attr('height', height)
-      .style('background', '#f8f8f8');
+      .style('background', '#706f6f');
   
     // Create hierarchical data
     const root = d3.hierarchy({ children: data })
@@ -61,5 +61,5 @@ export function createTreemap(containerId, data, onTopicClick) {
       .text(d => d.data.name)
       .style('font-size', '10px')
       .style('fill', '#333')
-      .style('pointer-events', 'none'); // Make text non-clickable
+      .style('pointer-events', 'none'); // Make text non-clickable... hä?
   }

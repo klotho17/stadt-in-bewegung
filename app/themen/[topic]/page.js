@@ -1,26 +1,34 @@
 'use client';
 
 import { fetchMetadata } from '../../utils/jsonscript';
+import { getCachedData, setCachedData } from '../../utils/cache';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-//import Link from 'next/link';
 
 export default function TopicPage() {
 
   const params = useParams();
   const topic = decodeURIComponent(params.topic);
 
-  const [titles, setTitles] = useState(null);
+  const [objects, setObjects] = useState(null);
   const [filteredItems, setFilteredItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadData() {
-      // Fetch data from the JSON files with function in utils/jsonscript.js
-      const data = await fetchMetadata();
-      setTitles(data);
+      // Fetch data from the JSON files with function in utils/jsonscript.js or use cached data
+      let data = getCachedData();
+      if (!data) {
+      console.log("Fetching data...");
+      data = await fetchMetadata();
+      setCachedData(data);
+      } else {
+      console.log("Using cached data...");
+      }
+
+      setObjects(data);
       
-      // Filter items that include this topic
+      // Filter items that include selected topic
       const itemsWithTopic = data.regularItems.filter(item => 
         Array.isArray(item.topic) && item.topic.includes(topic)
       );
@@ -32,26 +40,28 @@ export default function TopicPage() {
     loadData();
   }, [topic]);
 
+  // --------------------------  Visual Website Return ------------------------------- //
+
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">{filteredItems.length} Einträge zum Thema "{topic}" gefunden</h1>
+    <div>
+      <h1>{filteredItems.length} Einträge zum Thema "{topic}" gefunden</h1>
       
-      <ul className="space-y-2">
+      <ul>
         {filteredItems.map((item) => (
-          <li key={item.id} className="p-2 border rounded hover:bg-gray-50">
+          <li key={item.id}>
           <a href={`/objekt/${item.id}`} className="block">
       {/* title of the object */}
       <h3 className="font-medium">{item.title}</h3>
       {/* fileNumber and Year of the object */}
-      <p className="text-sm text-gray-600">
+      <p>
         Datei {item.fileNumber} | Jahr: {item.year || 'N/A'}
       </p>
       {/* other tobic tags the object has */}
         {item.topic && item.topic.length > 0 && (
-          <div className="mt-1">
-            <span className="text-xs text-gray-500">Weitere Themen: </span>
+          <div>
+            <span>Weitere Themen: </span>
               {item.topic.filter(t => t !== topic).join(', ')}
           </div>
             )}
