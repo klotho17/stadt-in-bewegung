@@ -40,3 +40,78 @@ a {
     color-scheme: dark;
   }
 }
+
+
+/* Titles and paragraphs */
+
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color:aquamarine;
+}
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: green;
+}
+
+/* Year Range Slider */
+
+.year-range-slider {
+  width: 100%;
+  padding: 0 1rem;
+  margin: 2rem 0;
+}
+
+.year-labels {
+  position: relative;
+  height: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.year-label {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  color: pink;
+}
+
+.slider-track {
+  height: 0.25rem;
+  background: #ddd;
+  border-radius: 0.25rem;
+}
+
+.slider-thumb {
+  height: 1.25rem;
+  width: 1.25rem;
+  border-radius: 50%;
+  background: #3b82f6;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  outline: none;
+}
+
+.slider-thumb.dragged {
+  transform: scale(1.1);
+}
+
+.thumb-value {
+  position: absolute;
+  top: -1.75rem;
+  font-size: 0.875rem;
+  background: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.current-range {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+}

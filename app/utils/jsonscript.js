@@ -40,6 +40,7 @@ export async function fetchData(fileNumber) {
 export async function fetchMetadata() {
     const fileNumbers = [];
     
+    //.... add better exception handling for missing files
     // including missing files and sub-indices
     for (let i = 1; i <= 82; i++) {
         if (i === 28) {

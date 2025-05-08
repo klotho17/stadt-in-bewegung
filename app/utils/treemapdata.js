@@ -1,6 +1,3 @@
-//import { fetchAllTitles } from "./jsonscript";
-//import { createTreemap } from './utils/treemap';
-
 // funcion to extract frequency of topics for the treemap from data
 export function prepareTreemapData(items, yearRange = null) {
     const topicFrequency = {};

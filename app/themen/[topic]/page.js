@@ -36,30 +36,26 @@ export default function TopicPage() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Einträge zum Thema: {topic}</h1>
-      
-      <div className="mb-4">
-        <p className="text-gray-600">
-          {filteredItems.length} Einträge gefunden
-        </p>
-      </div>
+      <h1 className="text-2xl font-bold mb-4">{filteredItems.length} Einträge zum Thema "{topic}" gefunden</h1>
       
       <ul className="space-y-2">
         {filteredItems.map((item) => (
           <li key={item.id} className="p-2 border rounded hover:bg-gray-50">
           <a href={`/objekt/${item.id}`} className="block">
+      {/* title of the object */}
       <h3 className="font-medium">{item.title}</h3>
+      {/* fileNumber and Year of the object */}
       <p className="text-sm text-gray-600">
         Datei {item.fileNumber} | Jahr: {item.year || 'N/A'}
       </p>
-      {/* i don't know what this does anymore */}
-            {item.topic && item.topic.length > 0 && (
-              <div className="mt-1">
-                <span className="text-xs text-gray-500">Weitere Themen: </span>
-                {item.topic.filter(t => t !== topic).join(', ')}
-              </div>
+      {/* other tobic tags the object has */}
+        {item.topic && item.topic.length > 0 && (
+          <div className="mt-1">
+            <span className="text-xs text-gray-500">Weitere Themen: </span>
+              {item.topic.filter(t => t !== topic).join(', ')}
+          </div>
             )}
-          </a>  
+          </a>  {/* ... link goes around the whole li(?) element atm */}
           </li>
         ))}
       </ul>
