@@ -42,7 +42,7 @@ export function createTreemap(containerId, data, onTopicClick) {
       .attr('fill', d => {
         const color = d3.scaleLinear()
           .domain([0, root.value])
-          .range(['#32a88d', '#9c32a8']);
+          .range(['#32a88d', '#9c32a8']); // ... will be replaced by pictures later anyway
         return color(d.value);
       })
       .attr('stroke', '#fff')

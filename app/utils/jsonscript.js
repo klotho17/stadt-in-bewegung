@@ -2,6 +2,7 @@ export const baseURL = "https://api.memobase.ch/record/soz-016-Sozarch_Vid_V_";
 
 import { extractTopics } from "./extracttopics";
 import { yearCorrection } from "./yearcorrection";
+import { fetchVideo } from "./videourl";
 
 // custom titles for missing files to includ them in the visualisation
 export const customTitles = {
@@ -54,16 +55,42 @@ export async function fetchMetadata() {
         }
     }
 
+    //call function fetchData for each file number
     const promises = fileNumbers.map(fileNumber => fetchData(fileNumber));
     const results = await Promise.all(promises);
     // call function from file yearcorrection.js in utils
-    yearCorrection(results);
+    yearCorrection(results);   
 
     console.log("Results structure:", results); // Log the structure of results
 
+    // new: Fetch video URLs for each result and add them to the results
+    const resultsWithVideoURLs = await Promise.all(
+        results.map(async (result, index) => {
+            if (result) {
+                const videoURL = await fetchVideo(result.id); // Generate video URL
+                return {
+                    ...result,
+                    videoURL, // Add video URL to the result
+                };
+            } else {
+                return {
+                    fileNumber: fileNumbers[index],
+                    title: "Not available",
+                    id: fileNumbers[index],
+                    year: "Not available",
+                    topic: "Not available",
+                    videoURL: "Not available", // Handle missing files
+                };
+            }
+        })
+    );
+
+    console.log("Results with video URLs:", resultsWithVideoURLs); // Debug log
+
     // Return data instead of manipulating DOM directly
     return {
-        regularItems: results.map((result, index) => ({
+        regularItems: resultsWithVideoURLs,
+        /* regularItems: results.map((result, index) => ({
             fileNumber: fileNumbers[index],
             ...(result || { 
                 title: "Not available", 
@@ -71,14 +98,15 @@ export async function fetchMetadata() {
                 year: "Not available", 
                 topic: "Not available" 
             }),
-        })),
+        })), */
         customItems: Object.entries(customTitles).map(([fileNumber, title]) => ({
             fileNumber,
             title,
             id: fileNumber, // Use fileNumber as ID for consistency
             isCustom: true,
             year: "Not available",
-            topic: "Not available"
+            topic: "Not available",
+            videoURL: "Not available", // Custom items don't have video URLs
         }))
     };
 }

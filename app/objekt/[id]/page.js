@@ -61,6 +61,9 @@ export default function SingleEntryPage() {
   if (loading) return <div>Loading...</div>;
   if (!entry) return <div>Eintrag nicht gefunden</div>;
 
+  // Check if the videoURL is a video file or a placeholder
+  const isVideo = entry.videoURL?.endsWith('.mp4') || entry.videoURL?.endsWith('.m4v');
+
   return (
     <div>
       <h1>{entry.title}</h1>
@@ -88,7 +91,23 @@ export default function SingleEntryPage() {
             </div>
           )}
         </div>
-        
+        {/* Embed video or display placeholder */}
+          <div className="media-container">
+          {isVideo ? (
+            <video controls width="640" height="360">
+              <source src={entry.videoURL} type={`video/${entry.videoURL.endsWith('.mp4') ? 'mp4' : 'm4v'}`} />
+              Your browser does not support the video tag.
+            </video>
+          ) : (
+            <img
+              src={entry.videoURL}
+              alt="Placeholder for unavailable video"
+              width="640"
+              height="360"
+            />
+          )}
+        </div>
+
         {/* Add more entry details as needed */}
       </div>
 

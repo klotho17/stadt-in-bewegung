@@ -129,6 +129,7 @@ export default function StartPage() {
           
           <li key={index}>
             File {item.id}: {item.title} 
+            VideoURL {item.videoURL}
             (ID: {item.id}) 
             (Created in year: {item.year || "N/A or unclear"}) 
             (Topics: {item.topic.length > 0 ? item.topic.join(", ") : "N/A or unclear"})
