@@ -10,7 +10,7 @@ export default function TopicPage() {
   const params = useParams();
   const topic = decodeURIComponent(params.topic);
 
-  const [objects, setObjects] = useState(null);
+  const [objects, setObjects] = useState(null); //unused?
   const [filteredItems, setFilteredItems] = useState([]);
   const [loading, setLoading] = useState(true);
 

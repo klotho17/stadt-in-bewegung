@@ -2,6 +2,7 @@
 
 import { fetchMetadata } from '../../utils/jsonscript';
 import { getCachedData, setCachedData } from '../../utils/cache';
+import { fetchVideo, isVideoURL, placeholderImage } from '../../utils/videourl';
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -39,9 +40,14 @@ export default function SingleEntryPage() {
 
       setEntry(currentEntry);
 
+      // Fetch the video URL for the current entry
+/*       const videoURL = await fetchVideo(currentEntry.fileNumber);
+      console.log("Video URL:", currentEntry.videoURL);
+      setEntry({ ...currentEntry, videoURL });
+      console.log("Video URL:", currentEntry.videoURL); */
+
       // Find adjacent entries
       const currentYear = currentEntry.year ? parseInt(currentEntry.year) : null;
-      
       const filtered = data.regularItems.filter(item => item.id !== id);
       
       setAdjacentEntries({
@@ -63,7 +69,12 @@ export default function SingleEntryPage() {
   if (!entry) return <div>Eintrag nicht gefunden</div>;
 
   // Check if the videoURL is a video file or a placeholder
+  // const isVideo = entry.videoURL?.endsWith('.mp4') || entry.videoURL?.endsWith('.m4v');
+  console.log("Video URL:", entry.videoURL);
+  //const isVideo = isVideoURL(entry.videoURL);
   const isVideo = entry.videoURL?.endsWith('.mp4') || entry.videoURL?.endsWith('.m4v');
+  console.log("Video URL:", entry.videoURL);
+  console.log("Is Video:", isVideo);
 
   return (
     <div>
@@ -94,39 +105,28 @@ export default function SingleEntryPage() {
         </div>
         {/* Embed video or display placeholder */}
         <div className="media-container">
-        {isVideo ? (
-          <video 
-          controls 
-          width="640" 
-          height="360"
-          onError={(e) => {
-        // Fallback to image if video fails to load
-        isVideo(false);
-        }}
-      >
-      <source 
-        src={entry.videoURL} 
-        type={
-          entry.videoURL.endsWith('.mp4') ? 'video/mp4' : 
-          entry.videoURL.endsWith('.m4v') ? 'video/x-m4v' : 
-          'video/mp4' // default
-        } 
-      />
-      Your browser does not support the video tag.
-    </video>
-    ) : (
-    <Image
-      src={entry.videoURL}
-      alt="Placeholder for unavailable video"
-      width="640"
-      height="360"
-      onError={(e) => {
-        // Fallback to a guaranteed placeholder if the image fails
-        e.target.src = "https://upload.wikimedia.org/wikipedia/commons/c/c7/ISO_7010_P029.svg";
-        }}
-    />
-    )}
-  </div>
+          {isVideo ? (
+            <video controls width="640" height="360">
+              <source
+                src={entry.videoURL}
+                type={
+                  entry.videoURL.endsWith('.mp4') ? 'video/mp4' : 
+                  entry.videoURL.endsWith('.m4v') ? 'video/x-m4v' : 
+                  'video/mp4' // default
+                } 
+              />
+              Your browser does not support the video tag.
+            </video>
+          ) : (
+            <Image
+              src={entry.videoURL || placeholderImage}
+              alt="Placeholder for unavailable video"
+              width="640"
+              height="360"
+            />
+          )}
+        </div>
+        <p>Image Source Wikimedia https://upload.wikimedia.org/wikipedia/commons/c/c7/ISO_7010_P029.svg</p>
 
         {/* Add more entry details as needed */}
       </div>
