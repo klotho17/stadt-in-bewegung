@@ -43,14 +43,14 @@ export default function SingleEntryPage() {
       
       const filtered = data.regularItems.filter(item => item.id !== id);
       
-      setAdjacentEntries({
+/*       setAdjacentEntries({
         prevYear: currentYear ? 
           filtered.filter(item => item.year && parseInt(item.year) === currentYear - 1) : [],
         sameYear: currentYear ?
           filtered.filter(item => item.year && parseInt(item.year) === currentYear) : [],
         nextYear: currentYear ?
           filtered.filter(item => item.year && parseInt(item.year) === currentYear + 1) : []
-      });
+      }); */
 
       setLoading(false);
     }
@@ -92,21 +92,40 @@ export default function SingleEntryPage() {
           )}
         </div>
         {/* Embed video or display placeholder */}
-          <div className="media-container">
-          {isVideo ? (
-            <video controls width="640" height="360">
-              <source src={entry.videoURL} type={`video/${entry.videoURL.endsWith('.mp4') ? 'mp4' : 'm4v'}`} />
-              Your browser does not support the video tag.
-            </video>
-          ) : (
-            <img
-              src={entry.videoURL}
-              alt="Placeholder for unavailable video"
-              width="640"
-              height="360"
-            />
-          )}
-        </div>
+        <div className="media-container">
+        {isVideo ? (
+          <video 
+          controls 
+          width="640" 
+          height="360"
+          onError={(e) => {
+        // Fallback to image if video fails to load
+        isVideo(false);
+        }}
+      >
+      <source 
+        src={entry.videoURL} 
+        type={
+          entry.videoURL.endsWith('.mp4') ? 'video/mp4' : 
+          entry.videoURL.endsWith('.m4v') ? 'video/x-m4v' : 
+          'video/mp4' // default
+        } 
+      />
+      Your browser does not support the video tag.
+    </video>
+    ) : (
+    <Image
+      src={entry.videoURL}
+      alt="Placeholder for unavailable video"
+      width="640"
+      height="360"
+      onError={(e) => {
+        // Fallback to a guaranteed placeholder if the image fails
+        e.target.src = "https://upload.wikimedia.org/wikipedia/commons/c/c7/ISO_7010_P029.svg";
+        }}
+    />
+    )}
+  </div>
 
         {/* Add more entry details as needed */}
       </div>
