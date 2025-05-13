@@ -46,7 +46,7 @@ export default function TopicPage() {
 
   return (
     <div>
-      <h1>{filteredItems.length} Einträge zum Thema "{topic}" gefunden</h1>
+      <h1>{filteredItems.length} Einträge zum Thema &quot;{topic}&quot; gefunden</h1>
       
       <ul>
         {filteredItems.map((item) => (

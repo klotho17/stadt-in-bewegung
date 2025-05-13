@@ -5,6 +5,7 @@ import { getCachedData, setCachedData } from '../../utils/cache';
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function SingleEntryPage() {
   const { id } = useParams();
@@ -43,14 +44,14 @@ export default function SingleEntryPage() {
       
       const filtered = data.regularItems.filter(item => item.id !== id);
       
-/*       setAdjacentEntries({
+      setAdjacentEntries({
         prevYear: currentYear ? 
           filtered.filter(item => item.year && parseInt(item.year) === currentYear - 1) : [],
         sameYear: currentYear ?
           filtered.filter(item => item.year && parseInt(item.year) === currentYear) : [],
         nextYear: currentYear ?
           filtered.filter(item => item.year && parseInt(item.year) === currentYear + 1) : []
-      }); */
+      });
 
       setLoading(false);
     }
