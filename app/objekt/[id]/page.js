@@ -2,11 +2,12 @@
 
 import { fetchMetadata } from '../../utils/jsonscript';
 import { getCachedData, setCachedData } from '../../utils/cache';
-import { fetchVideo, isVideoURL, placeholderImage } from '../../utils/videourl';
+//import { fetchVideo, isVideoURL, placeholderImage } from '../../utils/videourl';
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import MissingVideoImage from '@/app/components/MissingVideoImage';
 
 export default function SingleEntryPage() {
   const { id } = useParams();
@@ -40,12 +41,6 @@ export default function SingleEntryPage() {
 
       setEntry(currentEntry);
 
-      // Fetch the video URL for the current entry
-/*       const videoURL = await fetchVideo(currentEntry.fileNumber);
-      console.log("Video URL:", currentEntry.videoURL);
-      setEntry({ ...currentEntry, videoURL });
-      console.log("Video URL:", currentEntry.videoURL); */
-
       // Find adjacent entries
       const currentYear = currentEntry.year ? parseInt(currentEntry.year) : null;
       const filtered = data.regularItems.filter(item => item.id !== id);
@@ -69,22 +64,22 @@ export default function SingleEntryPage() {
   if (!entry) return <div>Eintrag nicht gefunden</div>;
 
   // Check if the videoURL is a video file or a placeholder
-  // const isVideo = entry.videoURL?.endsWith('.mp4') || entry.videoURL?.endsWith('.m4v');
-  console.log("Video URL:", entry.videoURL);
-  //const isVideo = isVideoURL(entry.videoURL);
-  const isVideo = entry.videoURL?.endsWith('.mp4') || entry.videoURL?.endsWith('.m4v');
-  console.log("Video URL:", entry.videoURL);
+  console.log("Still Image Source:", entry.imgURL);
+  console.log("Video Source:", entry.videoURL);
+  //const isVideo = entry.videoURL?.endsWith('.mp4') || entry.videoURL?.endsWith('.m4v');
+  //const isVideo = typeof entry.videoURL === 'string' && isVideoURL(entry.videoURL);
+  const isVideo = typeof entry.videoURL === 'string';
+  console.log("Video Source:", entry.videoURL);
   console.log("Is Video:", isVideo);
 
   return (
     <div>
       <h1>{entry.title}</h1>
-      
       <div>
         <div>
           <div>
             <h2>Datei</h2>
-            <p>{entry.fileNumber}</p>
+            <p>{entry.id}</p>
           </div>
           <div>
             <h2>Jahr</h2>
@@ -103,6 +98,18 @@ export default function SingleEntryPage() {
             </div>
           )}
         </div>
+        {/* Embed video still image or display placeholder */}
+        <div className="image-container">
+          {entry.imgURL && (
+            <img
+              src={entry.imgURL}
+              alt={entry.title}
+              width={640}
+              height={360}
+              className="object-cover"
+            />
+          )}
+        </div>
         {/* Embed video or display placeholder */}
         <div className="media-container">
           {isVideo ? (
@@ -118,15 +125,9 @@ export default function SingleEntryPage() {
               Your browser does not support the video tag.
             </video>
           ) : (
-            <Image
-              src={entry.videoURL || placeholderImage}
-              alt="Placeholder for unavailable video"
-              width="640"
-              height="360"
-            />
+            <MissingVideoImage width={640} height={360} />
           )}
         </div>
-        <p>Image Source Wikimedia https://upload.wikimedia.org/wikipedia/commons/c/c7/ISO_7010_P029.svg</p>
 
         {/* Add more entry details as needed */}
       </div>
