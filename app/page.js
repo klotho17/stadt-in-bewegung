@@ -35,7 +35,7 @@ export default function StartPage() {
        } else {
       console.log("Using cached data...");
     } 
-        setObjects(data); // ... very weird naming?
+        setObjects(data);
 
         // Calculate actual year range from data (precautionary)
         const years = data.regularItems

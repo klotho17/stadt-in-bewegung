@@ -5,15 +5,17 @@
 export const baseURL = "https://www.bild-video-ton.ch/ansicht/media/Sozarch_Vid_V_";
 import MissingVideoImage from "../components/MissingVideoImage";
 
-// fetching data from the composed URLs
-// give fileNumber as parameter in ...
-// Missing files don't have a video file
+// composing URLs with the fileNumber to embed the videos 
+// returning MissingVideo Image as a placeholder for missing files
 // ...ad cache for the video files
 export async function fetchVideo(fileNumber) {
+
+    // ... commented out so that videos are not constantly fetched
+/*     
     const mp4URL = `${baseURL}${fileNumber}.mp4`;
     const m4vURL = `${baseURL}${fileNumber}.m4v`;
 
-    try {
+try {
         // Try fetching the .mp4 URL first
         const response = await fetch(mp4URL, { method: 'HEAD' });
         if (response.ok) {
@@ -31,7 +33,7 @@ export async function fetchVideo(fileNumber) {
         }
     } catch (error) {
         console.error(`Error fetching .m4v for file ${fileNumber}: ${error.message}`);
-    }
+    } */
 
     // Return the placeholder image if neither .mp4 nor .m4v is available
     return MissingVideoImage;

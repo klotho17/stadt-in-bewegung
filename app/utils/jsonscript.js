@@ -7,9 +7,9 @@ import { fetchImage } from "./imageurl";
 
 // custom titles for missing files to includ them in the visualisation
 export const customTitles = {
-    34: "Missing File 34",
-    38: "Missing File 38",
-    83: "Missing File 83"
+    34: "Missing File 34: Gwalt?",
+    38: "Missing File 38: Interview mit Stadtrat Koller?",
+    83: "Missing File 83 - ...das existiert gar nicht"
 };
 
 // fetching data from the composed URLs
@@ -82,35 +82,33 @@ export async function fetchMetadata() {
                     id: fileNumbers[index],
                     year: "Not available",
                     topic: "Not available",
-                    videoURL: "Not available", // Handle missing files
-                    imgURL: "Not available", // Handle missing files
+                    videoURL: "Not available", 
+                    imgURL: "Not available",
                 };
             }
         })
     );
 
+    // Add custom titles to the results
+    const customItems = Object.entries(customTitles).map(([fileNumber, title]) => ({
+        fileNumber,
+        title,
+        id: fileNumber, // Use fileNumber as ID for consistency
+        isCustom: true,
+        year: "Not available",
+        topic: "Not available",
+        videoURL: "Not available", // Custom items don't have video URLs
+        imgURL: "Not available", // Custom items don't have image URLs
+    }));
+
     console.log("Results with video URLs:", resultsWithVideoURLs); // Debug log
+    console.log("all results:", results); // Debug log
+    console.log("Custom items:", customItems); // Debug log
+
 
     // Return data instead of manipulating DOM directly
     return {
         regularItems: resultsWithVideoURLs,
-        /* regularItems: results.map((result, index) => ({
-            fileNumber: fileNumbers[index],
-            ...(result || { 
-                title: "Not available", 
-                id: fileNumbers[index],
-                year: "Not available", 
-                topic: "Not available" 
-            }),
-        })), */
-        customItems: Object.entries(customTitles).map(([fileNumber, title]) => ({
-            fileNumber,
-            title,
-            id: fileNumber, // Use fileNumber as ID for consistency
-            isCustom: true,
-            year: "Not available",
-            topic: "Not available",
-            videoURL: "Not available", // Custom items don't have video URLs
-        }))
+        customItems: customItems
     };
 }

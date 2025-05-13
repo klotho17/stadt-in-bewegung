@@ -1,4 +1,4 @@
-export default function MissingVideoImage({ width = 640, height = 360 }) {
+export default function MissingVideoImage({ width, height}) {
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
