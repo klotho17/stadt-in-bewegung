@@ -122,14 +122,16 @@ export default function StartPage() {
         <div id="treemap-container" ref={treemapContainerRef}></div>
       </div>
       
-      <h2>List of Entries</h2>
+      <h2>----- List of Entries - temporary as overview helper for myself -----</h2>
+      <h3>----- place some rights statement and introduction text here later -----</h3>
+      <br />
       <ul>
         {/* list regular items */}
         {objects?.regularItems.map((item, index) => (
           
           <li key={index}>
             File {item.id}: {item.title} 
-            VideoURL {item.videoURL}
+            {/* VideoURL {item.videoURL || "no video"} - this is not really needed as causes an issue*/}
             (ID: {item.id}) 
             (Created in year: {item.year || "N/A or unclear"}) 
             (Topics: {item.topic.length > 0 ? item.topic.join(", ") : "N/A or unclear"})

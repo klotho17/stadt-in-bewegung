@@ -1,50 +1,50 @@
 'use client';
 
-import { fetchMetadata } from '../../utils/jsonscript';
-import { getCachedData, setCachedData } from '../../utils/cache';
-//import { fetchVideo, isVideoURL, placeholderImage } from '../../utils/videourl';
+//import { fetchMetadata } from '../../utils/jsonscript';
+//import { getCachedData, setCachedData } from '../../utils/cache';
+import { fetchVideo } from '../../utils/videourl';
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import MissingVideoImage from '@/app/components/MissingVideoImage';
+import { getRecord } from '@/app/api/get-record';
+import { fetchImage } from '@/app/utils/imageurl';
 
 export default function SingleEntryPage() {
   const { id } = useParams();
   const router = useRouter();
+  const [videoURL, setVideoURL] = useState(null);
+  const [imgURL, setImgURL] = useState(null);
   const [entry, setEntry] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [adjacentEntries, setAdjacentEntries] = useState({
     prevYear: [],
     sameYear: [],
     nextYear: []
   });
-  const [loading, setLoading] = useState(true);
+
+  //extract short fileNumber for Video and Image URL
+  const fileNumber = id.replace(/^.*Sozarch_Vid_V_/, "");
+  console.log("File Number:", fileNumber);
 
   useEffect(() => {
     async function loadData() {
-      let data = getCachedData();
-      if (!data) {
-        console.log("Fetching data...");
-        data = await fetchMetadata();
-        setCachedData(data);
-      } else {
-      console.log("Using cached data...");
-      }
-      
-      const currentEntry = [...data.regularItems, ...data.customItems]
-          .find(item => item.id === id);
-
-      if (!currentEntry) {
+      if (!fileNumber) {
         router.push('/404');
         return;
       }
-
-      setEntry(currentEntry);
-
+      const data = await getRecord(id); // Pass the full id to getRecord
+      if (!data) {
+        router.push('/404');
+        return;
+      }
+      setEntry(data);
       // Find adjacent entries
-      const currentYear = currentEntry.year ? parseInt(currentEntry.year) : null;
-      const filtered = data.regularItems.filter(item => item.id !== id);
+      //const currentYear = currentEntry.year ? parseInt(currentEntry.year) : null;
+      //const filtered = data.regularItems.filter(item => item.id !== id);
       
+      /*
       setAdjacentEntries({
         prevYear: currentYear ? 
           filtered.filter(item => item.year && parseInt(item.year) === currentYear - 1) : [],
@@ -53,23 +53,28 @@ export default function SingleEntryPage() {
         nextYear: currentYear ?
           filtered.filter(item => item.year && parseInt(item.year) === currentYear + 1) : []
       });
+      */
+
+      // Fetch video URL asynchronously and store in state
+      const urlV = await fetchVideo(fileNumber);
+      setVideoURL(urlV);
+
+      // Fetch video URL asynchronously and store in state
+      const urlI = await fetchImage(fileNumber);
+      setImgURL(urlI);
 
       setLoading(false);
     }
 
     loadData();
-  }, [id, router]);
+  }, [id, fileNumber, router]);
 
   if (loading) return <div>Loading...</div>;
   if (!entry) return <div>Eintrag nicht gefunden</div>;
 
   // Check if the videoURL is a video file or a placeholder
-  console.log("Still Image Source:", entry.imgURL);
-  console.log("Video Source:", entry.videoURL);
-  //const isVideo = entry.videoURL?.endsWith('.mp4') || entry.videoURL?.endsWith('.m4v');
-  //const isVideo = typeof entry.videoURL === 'string' && isVideoURL(entry.videoURL);
-  const isVideo = typeof entry.videoURL === 'string';
-  console.log("Video Source:", entry.videoURL);
+  const isVideo = typeof videoURL === 'string' && (videoURL.endsWith('.mp4') || videoURL.endsWith('.m4v'));
+  console.log("Video Source:", videoURL);
   console.log("Is Video:", isVideo);
 
   return (
@@ -100,9 +105,9 @@ export default function SingleEntryPage() {
         </div>
         {/* Embed video still image or display placeholder */}
         <div className="image-container">
-          {entry.imgURL && (
+          {imgURL && (
             <img
-              src={entry.imgURL}
+              src={imgURL}
               alt={entry.title}
               width={640}
               height={360}
@@ -115,10 +120,10 @@ export default function SingleEntryPage() {
           {isVideo ? (
             <video controls width="640" height="360">
               <source
-                src={entry.videoURL}
+                src={videoURL}
                 type={
-                  entry.videoURL.endsWith('.mp4') ? 'video/mp4' : 
-                  entry.videoURL.endsWith('.m4v') ? 'video/x-m4v' : 
+                  videoURL.endsWith('.mp4') ? 'video/mp4' : 
+                  videoURL.endsWith('.m4v') ? 'video/x-m4v' : 
                   'video/mp4' // default
                 } 
               />

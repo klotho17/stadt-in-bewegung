@@ -11,7 +11,7 @@ import MissingVideoImage from "../components/MissingVideoImage";
 export async function fetchVideo(fileNumber) {
 
     // ... commented out so that videos are not constantly fetched
-/*     
+
     const mp4URL = `${baseURL}${fileNumber}.mp4`;
     const m4vURL = `${baseURL}${fileNumber}.m4v`;
 
@@ -33,7 +33,7 @@ try {
         }
     } catch (error) {
         console.error(`Error fetching .m4v for file ${fileNumber}: ${error.message}`);
-    } */
+    } 
 
     // Return the placeholder image if neither .mp4 nor .m4v is available
     return MissingVideoImage;
