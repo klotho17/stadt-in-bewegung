@@ -1,12 +1,13 @@
 'use client'; // Needed since we're using useEffect and client-side features
 
-import { fetchMetadata } from './utils/jsonscript';
+//import { fetchMetadata } from './utils/jsonscript';
 import { createTreemap } from './utils/treemap';
 import { prepareTreemapData } from './utils/treemapdata';
-import { getCachedData, setCachedData } from './utils/cache';
+//import { getCachedData, setCachedData } from './utils/cache';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import YearRangeSlider from './components/YearRangeSlider';
+import { getAllObjects } from './api/get-record-all';
 
 export default function StartPage() {
   const [objects, setObjects] = useState(null);
@@ -26,21 +27,14 @@ export default function StartPage() {
   useEffect(() => {
     async function loadData() {
       try {
-        // Fetch data from the JSON files with function in utils/jsonscript.js or use cached data
-        let data = getCachedData();
-        if (!data) {
-          console.log("Fetching data...");
-          data = await fetchMetadata();
-          setCachedData(data);
-       } else {
-      console.log("Using cached data...");
-    } 
-        setObjects(data);
+        const objects = await getAllObjects();
+        setObjects(objects);
+        console.log("objects", objects)
 
         // Calculate actual year range from data (precautionary)
-        const years = data.regularItems
-          .map(item => item.year ? parseInt(item.year) : null)
-          .filter(year => year !== null);
+        const years = objects
+          .flatMap(item => Array.isArray(item.year) ? item.year : [item.year])
+          .filter(year => typeof year === "number" && !isNaN(year) && year > 0);
         
         if (years.length > 0) {
           const dataMinYear = Math.min(...years);
@@ -56,7 +50,7 @@ export default function StartPage() {
         //... later i want to use the data from the custom items as well
         // get the data for the treemap from function in utils/filtertopics.js
         // Initial treemap data with all years
-        const initialData = prepareTreemapData(data.regularItems);
+        const initialData = prepareTreemapData(objects);
         setTreemapData(initialData);
         setLoading(false);
       } catch (err) {
@@ -64,7 +58,6 @@ export default function StartPage() {
         setLoading(false);
       }
     }
-    
     loadData();
   }, []);
 
@@ -72,7 +65,7 @@ export default function StartPage() {
   useEffect(() => {
     if (objects && yearRange) {
       const filteredData = prepareTreemapData(
-        objects.regularItems, 
+        objects, 
         { from: yearRange.values[0], to: yearRange.values[1] }
       );
       setTreemapData(filteredData);
@@ -126,24 +119,16 @@ export default function StartPage() {
       <h3>----- place some rights statement and introduction text here later -----</h3>
       <br />
       <ul>
-        {/* list regular items */}
-        {objects?.regularItems.map((item, index) => (
-          
+        {objects?.map((item, index) => (
           <li key={index}>
-            File {item.id}: {item.title} 
-            {/* VideoURL {item.videoURL || "no video"} - this is not really needed as causes an issue*/}
-            (ID: {item.id}) 
-            (Created in year: {item.year || "N/A or unclear"}) 
-            (Topics: {item.topic.length > 0 ? item.topic.join(", ") : "N/A or unclear"})
-            </li>
-        ))}
-        {/* list irregular items */}
-        {objects?.customItems.map((item, index) => (
-          <li key={`custom-${index}`}>
-            File {item.id}: {item.title} (Custom Title)
+           File {item.id}: {item.title} 
+           <br/> 
+           {Array.isArray(item.year) ? item.year.join(", ") : item.year}<br />
+           {item.oldYear}<br />
           </li>
-        ))}
+      ))}
       </ul>
+      
     </div>
   );
 }

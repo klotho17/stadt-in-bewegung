@@ -1,7 +1,5 @@
 'use client';
 
-import { fetchMetadata } from '../../utils/jsonscript';
-import { getCachedData, setCachedData } from '../../utils/cache';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { getRecordList } from '@/app/api/get-record-list';
@@ -10,8 +8,6 @@ export default function TopicPage() {
 
   const params = useParams();
   const topic = decodeURIComponent(params.topic);
-
-  const [objects, setObjects] = useState(null); //unused?
   const [filteredItems, setFilteredItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
