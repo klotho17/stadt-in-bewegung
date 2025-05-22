@@ -19,7 +19,7 @@ export async function getAllObjects() {
         const objects = data["hydra:member"].map(item => ({
             id: item["@id"], // e.g. "mbr:soz-016-Sozarch_Vid_V_047"
             title: item.title || "Titel fehlt", // If available
-            abstract: item.abstract || "Beschreibung fehlt",
+            //abstract: item.abstract || "Beschreibung fehlt",
             year: yearCorrection(item.created) || 0,
             topic: extractTopics(item.hasOrHadSubject) || "keine Angabe",
         }));

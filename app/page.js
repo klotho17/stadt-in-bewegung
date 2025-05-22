@@ -33,8 +33,10 @@ export default function StartPage() {
         // Calculate actual year range from data
         const years = objects
           .flatMap(item => Array.isArray(item.year) ? item.year : [item.year])
-          .filter(year => typeof year === "number" && !isNaN(year) && year > 0);
+          .filter(year => typeof year === "number" && !isNaN(year) && year > 0); // 0 custom files are 0
         
+        console.log("Years from objects", years);
+
         if (years.length > 0) {
           const dataMinYear = Math.min(...years);
           const dataMaxYear = Math.max(...years);
@@ -51,6 +53,8 @@ export default function StartPage() {
         // Initial treemap data with all years
         const initialData = prepareTreemapData(objects);
         setTreemapData(initialData);
+        console.log("objects for Treemap", objects);
+        console.log("Initial Treemap Data", initialData);
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -120,7 +124,7 @@ export default function StartPage() {
       <ul>
         {objects?.map((item, index) => (
           <li key={index}>
-           {item.title} // {item.id} // {Array.isArray(item.year) ? item.year.join(", ") : item.year}<br />
+           {item.title} {item.id} {Array.isArray(item.year) ? item.year.join(", ") : item.year}<br />
            {Array.isArray(item.topic) ? item.topic.join(", ") : item.topic || "no topic?"}<br />
            <br/> 
           </li>

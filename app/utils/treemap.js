@@ -7,7 +7,7 @@ export function createTreemap(containerId, data, onTopicClick) {
   
     // Set dimensions
     const width = container.node().clientWidth || 800;
-    const height = 500;
+    const height = 1000;
     const margin = { top: 20, right: 20, bottom: 20, left: 20 };
   
     // Create SVG
@@ -58,7 +58,7 @@ export function createTreemap(containerId, data, onTopicClick) {
       .append('text')
       .attr('x', 5)
       .attr('y', 15)
-      .text(d => d.data.name)
+      .text(d => `${d.data.name} (${d.data.value})`)
       .style('font-size', '10px')
       .style('fill', '#333')
       .style('pointer-events', 'none'); // Make text non-clickable... hä?
