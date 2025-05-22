@@ -1,5 +1,5 @@
 'use client';
-
+console.log("SingleEntryPage file loaded");
 //import { fetchMetadata } from '../../utils/jsonscript';
 //import { getCachedData, setCachedData } from '../../utils/cache';
 import { fetchVideo } from '../../utils/videourl';
@@ -13,6 +13,7 @@ import { fetchImage } from '@/app/utils/imageurl';
 
 export default function SingleEntryPage() {
   const { id } = useParams();
+  const decodedId = decodeURIComponent(id); // solve this nicer later maybe
   const router = useRouter();
   const [videoURL, setVideoURL] = useState(null);
   const [imgURL, setImgURL] = useState(null);
@@ -25,20 +26,21 @@ export default function SingleEntryPage() {
   });
 
   //extract short fileNumber for Video and Image URL
-  const fileNumber = id.replace(/^.*Sozarch_Vid_V_/, "");
-  console.log("File Number:", fileNumber);
+  //const fileNumber = id.replace(/^.*Sozarch_Vid_V_/, "");
+  //console.log("File Number:", fileNumber);
 
   useEffect(() => {
+    console.log("ID and decoded:", id, decodedId);
     async function loadData() {
-      if (!fileNumber) {
+      /* if (!id) {
         router.push('/404');
         return;
-      }
-      const data = await getRecord(id); // Pass the full id to getRecord
-      if (!data) {
+      } */
+      const data = await getRecord(decodedId); // Pass the full id to getRecord
+      /* if (!data) {
         router.push('/404');
         return;
-      }
+      } */
       setEntry(data);
       // Find adjacent entries
       //const currentYear = currentEntry.year ? parseInt(currentEntry.year) : null;
@@ -56,18 +58,18 @@ export default function SingleEntryPage() {
       */
 
       // Fetch video URL asynchronously and store in state
-      const urlV = await fetchVideo(fileNumber);
+      const urlV = await fetchVideo(decodedId);
       setVideoURL(urlV);
 
       // Fetch video URL asynchronously and store in state
-      const urlI = await fetchImage(fileNumber);
+      const urlI = await fetchImage(decodedId);
       setImgURL(urlI);
 
       setLoading(false);
     }
 
     loadData();
-  }, [id, fileNumber, router]);
+  }, [id, router]);
 
   if (loading) return <div>Loading...</div>;
   if (!entry) return <div>Eintrag nicht gefunden</div>;
@@ -105,15 +107,17 @@ export default function SingleEntryPage() {
         </div>
         {/* Embed video still image or display placeholder */}
         <div className="image-container">
-          {imgURL && (
-            <img
-              src={imgURL}
-              alt={entry.title}
-              width={640}
-              height={360}
-              className="object-cover"
-            />
-          )}
+          {imgURL ? (
+          <img
+            src={imgURL}
+            alt={entry.title}
+            width={640}
+            height={360}
+            className="object-cover"
+          />
+) : (
+  <MissingVideoImage width={640} height={360} />
+)}
         </div>
         {/* Embed video or display placeholder */}
         <div className="media-container">

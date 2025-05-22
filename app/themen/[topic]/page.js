@@ -14,20 +14,11 @@ export default function TopicPage() {
   useEffect(() => {
     async function loadData() {
       const recordList = await getRecordList(topic);
-
-      /*
-      // Fetch data from the JSON files with function in utils/jsonscript.js or use cached data
-      let data = getCachedData();
-      if (!data) {
-        console.log("Fetching data...");
-        data = await fetchMetadata();
-        setCachedData(data);
-      } else {
-        console.log("Using cached data...");
-      }
-      setObjects(data);
-      */
       setFilteredItems(recordList);
+      console.log("Get Record List from API with function", recordList)
+      console.log("doctype of item.id", typeof recordList[0].id)
+      console.log("FilteredItems", filteredItems)
+
       setLoading(false);
     }
 
@@ -43,18 +34,18 @@ export default function TopicPage() {
       <h1>{filteredItems.length} Einträge zum Thema &quot;{topic}&quot; gefunden</h1>
 
       <ul>
-        {filteredItems.map((item) => (
-          <li data-key={item["@id"]} key={item["@id"]}>
+        {filteredItems?.map((item) => (
+          <li data-key={item.id} key={item.id}>
             {/* <pre>
               {JSON.stringify(item, null, 2)}
             </pre> */}
             
-            <a href={`/objekt/${item["@id"]}`} className="block">
+            <a href={`/objekt/${item.id}`} className="block">
               {/* title of the object */}
               <h3 className="font-medium">{item.title}</h3>
-              {/* fileNumber and Year of the object */}
+              {/* ID and Year of the object */}
               <p>
-                Datei {item.fileNumber} | Jahr: {item.created.normalizedDateValue || 'Jahr unbekannt'}
+                Datei {item.id} | Jahr: {item.year || 'Jahr unbekannt'}
               </p>
               {/* other tobic tags the object has */}
               {item.topic && item.topic.length > 0 && (
@@ -64,6 +55,7 @@ export default function TopicPage() {
                 </div>
               )}
             </a>  {/* ... link goes around the whole li(?) element atm */}
+            <br/>
           </li>
         ))}
       </ul>

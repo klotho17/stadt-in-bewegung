@@ -1,5 +1,6 @@
 import { extractTopics } from "../utils/extracttopics"; //... to filter the acctual topics without persons
 import { yearCorrection } from "../utils/yearcorrection";
+import { getCustomObjects } from "../utils/customobjects";
 
 export const baseURL = "https://api.memobase.ch/record/advancedSearch?q=isOrWasPartOf:mbrs:soz-016";
 
@@ -12,7 +13,7 @@ export async function getAllObjects() {
             throw new Error(`Failed to fetch data from ${url}`);
         }
         const data = await response.json();
-        console.log("original Data from API", data["hydra:member"]);
+        console.log("Original Data from API", data["hydra:member"]);
 
         // Map over hydra:member and extract relevant fields
         const objects = data["hydra:member"].map(item => ({
@@ -20,13 +21,15 @@ export async function getAllObjects() {
             title: item.title || "Titel fehlt", // If available
             abstract: item.abstract || "Beschreibung fehlt",
             year: yearCorrection(item.created) || 0,
-            topic: extractTopics(item.hasOrHadSubject),
-            oldYear: item.created?.normalizedDateValue || "-----error----",
+            topic: extractTopics(item.hasOrHadSubject) || "keine Angabe",
         }));
 
-        console.log("Adjusted Data from API", objects);
+        // Add cencored objects to the result
+        const allObjects = [...objects, ...getCustomObjects()];
 
-        return objects;
+        console.log("Adjusted and supplemented Data from API", allObjects);
+
+        return allObjects;
 
     } catch (error) {
         console.error(`Error fetching data from ${url}:`, error);

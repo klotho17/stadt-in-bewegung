@@ -1,19 +1,18 @@
 'use client'; // Needed since we're using useEffect and client-side features
 
-//import { fetchMetadata } from './utils/jsonscript';
-import { createTreemap } from './utils/treemap';
 import { prepareTreemapData } from './utils/treemapdata';
-//import { getCachedData, setCachedData } from './utils/cache';
+import { createTreemap } from './utils/treemap';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import YearRangeSlider from './components/YearRangeSlider';
 import { getAllObjects } from './api/get-record-all';
+
+import YearRangeSlider from './components/YearRangeSlider'
 
 export default function StartPage() {
   const [objects, setObjects] = useState(null);
-  const treemapContainerRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const treemapContainerRef = useRef(null);
   const [treemapData, setTreemapData] = useState(null);
   const router = useRouter();
 
@@ -29,9 +28,9 @@ export default function StartPage() {
       try {
         const objects = await getAllObjects();
         setObjects(objects);
-        console.log("objects", objects)
+        console.log("Get Objects from API with function", objects)
 
-        // Calculate actual year range from data (precautionary)
+        // Calculate actual year range from data
         const years = objects
           .flatMap(item => Array.isArray(item.year) ? item.year : [item.year])
           .filter(year => typeof year === "number" && !isNaN(year) && year > 0);
@@ -121,10 +120,9 @@ export default function StartPage() {
       <ul>
         {objects?.map((item, index) => (
           <li key={index}>
-           File {item.id}: {item.title} 
+           {item.title} // {item.id} // {Array.isArray(item.year) ? item.year.join(", ") : item.year}<br />
+           {Array.isArray(item.topic) ? item.topic.join(", ") : item.topic || "no topic?"}<br />
            <br/> 
-           {Array.isArray(item.year) ? item.year.join(", ") : item.year}<br />
-           {item.oldYear}<br />
           </li>
       ))}
       </ul>

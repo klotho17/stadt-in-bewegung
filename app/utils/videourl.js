@@ -3,18 +3,25 @@
 // bps for thumbnail https://www.bild-video-ton.ch/publish/videostills/Sozarch_Vid_V_001.jpg
 
 export const baseURL = "https://www.bild-video-ton.ch/ansicht/media/Sozarch_Vid_V_";
-import MissingVideoImage from "../components/MissingVideoImage";
+//import MissingVideoImage from "../components/MissingVideoImage";
 
 // composing URLs with the fileNumber to embed the videos 
 // returning MissingVideo Image as a placeholder for missing files
 // ...ad cache for the video files
-export async function fetchVideo(fileNumber) {
+export async function fetchVideo(id) {
 
-    // ... commented out so that videos are not constantly fetched
+    // for custom items return placeholder
+    if (!id.startsWith("mbr")) {
+        return null;
+        }
+
+    //extract short fileNumber for Video and Image URL
+    const fileNumber = id.replace(/^.*Sozarch_Vid_V_/, "");
+    console.log("File Number:", fileNumber);
 
     const mp4URL = `${baseURL}${fileNumber}.mp4`;
     const m4vURL = `${baseURL}${fileNumber}.m4v`;
-
+    
 try {
         // Try fetching the .mp4 URL first
         const response = await fetch(mp4URL, { method: 'HEAD' });
@@ -36,12 +43,5 @@ try {
     } 
 
     // Return the placeholder image if neither .mp4 nor .m4v is available
-    return MissingVideoImage;
+    return null;
 }
-
-// Check if a given URL is a video file.
-/* export function isVideoURL(url) {
-    if (!url) return false;
-    return url.endsWith('.mp4') || url.endsWith('.m4v');
-}
- */
