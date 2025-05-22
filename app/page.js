@@ -5,6 +5,7 @@ import { createTreemap } from './utils/treemap';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getAllObjects } from './api/get-record-all';
+import { getTreemapImages } from './utils/treemapimages';
 
 import YearRangeSlider from './components/YearRangeSlider'
 
@@ -12,8 +13,10 @@ export default function StartPage() {
   const [objects, setObjects] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [containerWidth, setContainerWidth] = useState(800);
   const treemapContainerRef = useRef(null);
   const [treemapData, setTreemapData] = useState(null);
+  const [topicImages, setTopicImages] = useState({});
   const router = useRouter();
 
   // Year filter state - array for range slider
@@ -79,10 +82,55 @@ export default function StartPage() {
   useEffect(() => {
     if (treemapData && treemapContainerRef.current) {
       createTreemap("treemap-container", treemapData, (topic) => {
-        router.push(`/themen/${encodeURIComponent(topic)}`);
+        //router.push(`/themen/${encodeURIComponent(topic)}`);
+        router.push(`/themen/${encodeURIComponent(topic)}?von=${yearRange.values[0]}&bis=${yearRange.values[1]}`);
       });
     }
   }, [treemapData, router]);
+
+  useEffect(() => {
+  async function updateTreemapAndImages() {
+    if (objects && yearRange) {
+      const filteredData = prepareTreemapData(
+        objects, 
+        { from: yearRange.values[0], to: yearRange.values[1] }
+      );
+      setTreemapData(filteredData);
+
+      // Get all topics from filteredData
+      const topics = filteredData.map(d => d.name);
+      // Fetch images for each topic
+      const images = await getTreemapImages(objects, topics, yearRange.values[0], yearRange.values[1]);
+      setTopicImages(images);
+    }
+  }
+  updateTreemapAndImages();
+  }, [objects, yearRange]);
+
+  useEffect(() => {
+  if (treemapData && treemapContainerRef.current) {
+    createTreemap(
+      "treemap-container",
+      treemapData,
+      (topic) => {
+        router.push(`/themen/${encodeURIComponent(topic)}?von=${yearRange.values[0]}&bis=${yearRange.values[1]}`);
+      },
+      topicImages, // pass images as an extra argument
+      containerWidth // pass container width
+    );
+  }
+  }, [treemapData, router, topicImages, containerWidth]);
+
+  useEffect(() => {
+  function updateWidth() {
+    if (treemapContainerRef.current) {
+      setContainerWidth(treemapContainerRef.current.clientWidth);
+    }
+  }
+  updateWidth();
+  window.addEventListener('resize', updateWidth);
+  return () => window.removeEventListener('resize', updateWidth);
+  }, []);
 
   const handleYearChange = (values) => {
     setYearRange(prev => ({
@@ -115,8 +163,7 @@ export default function StartPage() {
 
       {/* Treemap Container */}
       <div className="treemap-wrapper">
-        <div id="treemap-container" ref={treemapContainerRef}></div>
-      </div>
+      <div id="treemap-container" ref={treemapContainerRef} style={{ width: "100%" }} />      </div>
       
       <h2>----- List of Entries - temporary as overview helper for myself -----</h2>
       <h3>----- place some rights statement and introduction text here later -----</h3>

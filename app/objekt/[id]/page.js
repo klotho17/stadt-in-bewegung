@@ -85,11 +85,11 @@ export default function SingleEntryPage() {
       <div>
         <div>
           <div>
-            <h2>Datei</h2>
+            <h2>---Datei---:</h2>
             <p>{entry.id}</p>
           </div>
           <div>
-            <h2>Jahr</h2>
+            <h2>Jahr:</h2>
             <p>{entry.year || 'N/A'}</p>
           </div>
           {entry.topic?.length > 0 && (
@@ -98,7 +98,7 @@ export default function SingleEntryPage() {
               <div>
                 {entry.topic.map(topic => (
                   <Link key={topic} href={`/themen/${encodeURIComponent(topic)}`}>
-                    {topic}
+                    {topic},
                   </Link>
                 ))}
               </div>
@@ -141,9 +141,14 @@ export default function SingleEntryPage() {
         {/* Add more entry details as needed */}
       </div>
 
+      <div>
+        <h2>Abstract</h2>
+        <p>{entry.abstract || 'N/A'}</p>
+      </div>
+
       {/* Adjacent entries navigation */}
       <div>
-        <h2>Verwandte Einträge</h2>
+        <h2>Verwandte Einträge - löschen dafür credits und zurück</h2>
         
         {entry.year && (
           <>
