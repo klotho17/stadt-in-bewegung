@@ -1,6 +1,6 @@
-import { extractTopics } from "../utils/extracttopics"; //... to filter the acctual topics without persons
-import { yearCorrection } from "../utils/yearcorrection";
-import { getCustomObjects } from "../utils/customobjects";
+import { extractTopics } from "../utils/extracttopics"; // to filter the acctual topics without persons
+import { yearCorrection } from "../utils/yearcorrection"; // correct year format to sortet YYYY array
+import { getCustomObjects } from "../utils/customobjects"; // to add custom objects to the result
 
 export const baseURL = "https://api.memobase.ch/record/advancedSearch?q=isOrWasPartOf:mbrs:soz-016";
 
@@ -15,11 +15,10 @@ export async function getAllObjects() {
         const data = await response.json();
         console.log("Original Data from API", data["hydra:member"]);
 
-        // Map over hydra:member and extract relevant fields
+        // Map over hydra:member and extract relevant fields for main page
         const objects = data["hydra:member"].map(item => ({
             id: item["@id"], // e.g. "mbr:soz-016-Sozarch_Vid_V_047"
-            title: item.title || "Titel fehlt", // If available
-            //abstract: item.abstract || "Beschreibung fehlt",
+            title: item.title || "Titel fehlt", // not used on main page, only for checking
             year: yearCorrection(item.created) || 0,
             topic: extractTopics(item.hasOrHadSubject) || "keine Angabe",
         }));
@@ -27,7 +26,7 @@ export async function getAllObjects() {
         // Add cencored objects to the result
         const allObjects = [...objects, ...getCustomObjects()];
 
-        console.log("Adjusted and supplemented Data from API", allObjects);
+        //console.log("Adjusted and supplemented Data from API", allObjects);
 
         return allObjects;
 

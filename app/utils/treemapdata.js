@@ -6,8 +6,8 @@ export function prepareTreemapData(items, yearRange = null) {
     items.forEach(item => {
         // Check if item is within year range (if range is provided)
         const yearValid = !yearRange || (
-            item.year && 
-            parseInt(item.year) >= yearRange.from && 
+            item.year &&
+            parseInt(item.year) >= yearRange.from &&
             parseInt(item.year) <= yearRange.to
         );
 

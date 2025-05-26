@@ -31,7 +31,7 @@ export default function StartPage() {
       try {
         const objects = await getAllObjects();
         setObjects(objects);
-        console.log("Get Objects from API with Function", objects)
+        console.log("Get Objects from API and Custom items with Function", objects)
 
         // Calculate actual year range from given data
         const years = objects

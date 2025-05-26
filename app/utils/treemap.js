@@ -1,5 +1,7 @@
 import * as d3 from "d3";
 
+// move to components?
+
 export function createTreemap(containerId, data, onTopicClick, topicImages = {}) {
     const container = d3.select(`#${containerId}`);
     container.html('');

@@ -1,8 +1,9 @@
 'use client';
 
+import { getRecordList } from '@/app/api/get-record-list';
+
 import { useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
-import { getRecordList } from '@/app/api/get-record-list';
 
 export default function TopicPage() {
 
