@@ -8,9 +8,11 @@ export const baseURL = "https://api.memobase.ch/record/advancedSearch?q=@id:"
 
 // fetching data from the composed URLs
 export async function getRecord(id) {
+    // get custom objects if the ID does not start with "mbr"
     if (!id.startsWith("mbr")) {
-        return getCustomObjects().find(obj => obj.id === id) || null; // Return custom object if ID doesn't start with "mbr:"
+        return getCustomObjects().find(obj => obj.id === id) || null;
     }
+    // get data from the API for regular items
     const url = `${baseURL}${id}&format=json`;
     try {
         const response = await fetch(url);
@@ -23,7 +25,8 @@ export async function getRecord(id) {
         
         console.log("Data from API", record);
 
-        //return data["hydra:member"] 
+        // old return of pure api data
+        // return data["hydra:member"] 
         return { 
                 id: record[0]["@id"], 
                 title: record[0].title, 

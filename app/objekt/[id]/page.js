@@ -1,15 +1,14 @@
 'use client';
-console.log("SingleEntryPage file loaded");
-//import { fetchMetadata } from '../../utils/jsonscript';
-//import { getCachedData, setCachedData } from '../../utils/cache';
-import { fetchVideo } from '../../utils/videourl';
+
+import { getRecord } from '@/app/api/get-record'; // API-call to fetch a single record
+import { fetchImage } from '@/app/utils/imageurl'; // fetch Image from URL
+import { fetchVideo } from '../../utils/videourl'; // fetch Video from URL
+import MissingVideoImage from '@/app/components/MissingVideoImage'; // placeholder for missing video or image
+
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import MissingVideoImage from '@/app/components/MissingVideoImage';
-import { getRecord } from '@/app/api/get-record';
-import { fetchImage } from '@/app/utils/imageurl';
 
 export default function SingleEntryPage() {
   const { id } = useParams();
@@ -36,7 +35,7 @@ export default function SingleEntryPage() {
         router.push('/404');
         return;
       } */
-      const data = await getRecord(decodedId); // Pass the full id to getRecord
+      const data = await getRecord(decodedId);
       /* if (!data) {
         router.push('/404');
         return;
@@ -45,7 +44,7 @@ export default function SingleEntryPage() {
       // Find adjacent entries
       //const currentYear = currentEntry.year ? parseInt(currentEntry.year) : null;
       //const filtered = data.regularItems.filter(item => item.id !== id);
-      
+
       /*
       setAdjacentEntries({
         prevYear: currentYear ? 
@@ -108,16 +107,16 @@ export default function SingleEntryPage() {
         {/* Embed video still image or display placeholder */}
         <div className="image-container">
           {imgURL ? (
-          <img
-            src={imgURL}
-            alt={entry.title}
-            width={640}
-            height={360}
-            className="object-cover"
-          />
-) : (
-  <MissingVideoImage width={640} height={360} />
-)}
+            <img
+              src={imgURL}
+              alt={entry.title}
+              width={640}
+              height={360}
+              className="object-cover"
+            />
+          ) : (
+            <MissingVideoImage width={640} height={360} />
+          )}
         </div>
         {/* Embed video or display placeholder */}
         <div className="media-container">
@@ -126,10 +125,10 @@ export default function SingleEntryPage() {
               <source
                 src={videoURL}
                 type={
-                  videoURL.endsWith('.mp4') ? 'video/mp4' : 
-                  videoURL.endsWith('.m4v') ? 'video/x-m4v' : 
-                  'video/mp4' // default
-                } 
+                  videoURL.endsWith('.mp4') ? 'video/mp4' :
+                    videoURL.endsWith('.m4v') ? 'video/x-m4v' :
+                      'video/mp4' // default
+                }
               />
               Your browser does not support the video tag.
             </video>
@@ -149,7 +148,7 @@ export default function SingleEntryPage() {
       {/* Adjacent entries navigation */}
       <div>
         <h2>Verwandte Einträge - löschen dafür credits und zurück</h2>
-        
+
         {entry.year && (
           <>
             {adjacentEntries.prevYear.length > 0 && (
@@ -158,7 +157,7 @@ export default function SingleEntryPage() {
                 <ul>
                   {adjacentEntries.prevYear.map(item => (
                     <li key={item.id}>
-                      <Link 
+                      <Link
                         href={`/objekt/${item.id}`}>
                         {item.title}
                       </Link>
