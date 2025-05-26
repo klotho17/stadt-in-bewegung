@@ -136,8 +136,6 @@ export default function SingleEntryPage() {
             <MissingVideoImage width={640} height={360} />
           )}
         </div>
-
-        {/* Add more entry details as needed */}
       </div>
 
       <div>
