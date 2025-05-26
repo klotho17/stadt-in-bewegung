@@ -17,6 +17,6 @@ export function prepareTreemapData(items, yearRange = null) {
             });
         }
     });
-    console.log("Topic Frequency Data", topicFrequency);
+    //console.log("Topic Frequency Data", topicFrequency);
     return Object.entries(topicFrequency).map(([name, value]) => ({ name, value }));
 }
