@@ -1,4 +1,4 @@
-'use client'; // Needed since using useEffect and client-side features
+'use client';
 
 import { getAllObjects } from './api/get-record-all'; // API-call for all objects
 import { prepareTreemapData } from './utils/treemapdata'; // prepare data from API and custom files for visualisation

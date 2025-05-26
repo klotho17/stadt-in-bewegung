@@ -17,7 +17,7 @@ export async function getAllObjects() {
 
         // Map over hydra:member and extract relevant fields for main page
         const objects = data["hydra:member"].map(item => ({
-            id: item["@id"], // e.g. "mbr:soz-016-Sozarch_Vid_V_047"
+            id: item["@id"], // e.g. "mbr:soz-016-Sozarch_Vid_V_047" - this is acctually not needed here either?
             title: item.title || "Titel fehlt", // not used on main page, only for checking
             year: yearCorrection(item.created) || 0,
             topic: extractTopics(item.hasOrHadSubject) || "keine Angabe",

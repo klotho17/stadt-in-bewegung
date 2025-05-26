@@ -1,16 +1,16 @@
 export function getCustomObjects() {
     return [
         {
-            id: "custom-034",
-            title: "Missing File 34: Gwalt?",
-            abstract: "zensiert",
+            id: "custom-034", // presumed file number as custom
+            title: "Gwalt",
+            abstract: "Dieses Objekt ist aus personenrechtlichen Gründen für jede Benutzung gesperrt.",
             year: [0],
             topic: ["keine Themen"]
         },
         {
-            id: "custom-038",
-            title: "File 38: Interview mit Stadtrat Koller?Custom Entry 2",
-            abstract: "zensiert",
+            id: "custom-038", // presumed file number as cusstom
+            title: "Interview mit Stadtrat Koller",
+            abstract: "Dieses Objekt ist aus personenrechtlichen Gründen für jede Benutzung gesperrt.",
             year: [0],
             topic: ["keine Themen"]
         }

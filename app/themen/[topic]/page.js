@@ -1,6 +1,6 @@
 'use client';
 
-import { getRecordList } from '@/app/api/get-record-list';
+import { getRecordList } from '@/app/api/get-record-list'; // API-call to fetch records of a specific topic
 
 import { useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
@@ -26,10 +26,8 @@ export default function TopicPage() {
       setLoading(false);
     }
 
-    
-
     loadData();
-  }, [topic]);
+  }, [topic, from, to]);
 
   function isInYearRange(item) {
     if (!from || !to) return true;
@@ -41,9 +39,10 @@ export default function TopicPage() {
 
   const inRange = filteredItems.filter(isInYearRange);
   const outOfRange = filteredItems.filter(item => !isInYearRange(item));
-  const sortedItems = [...inRange, ...outOfRange];
+  //const sortedItems = [...inRange, ...outOfRange]; // combined array, not used?
   console.log("in Range", inRange);
   console.log("out of Range", outOfRange);
+  
   // --------------------------  Visual Website Return ------------------------------- //
 
   if (loading) return <div>Loading...</div>;
@@ -57,17 +56,14 @@ export default function TopicPage() {
       <ul>
         {inRange?.map((item) => (
           <li data-key={item.id} key={item.id}>
-            {/* <pre>
-              {JSON.stringify(item, null, 2)}
-            </pre> */}
             
             <a href={`/objekt/${item.id}`} className="block">
               {/* title of the object */}
               <h3 className="font-medium">{item.title}</h3>
-              {/* ID and Year of the object */}
             </a>
+              {/* ID and Year of the object */}
               <p>
-                Datei---: {item.id}
+                Datei-tmp-------: {item.id}
               </p>
                 <div>
                   <span>Jahr: </span>
@@ -96,12 +92,13 @@ export default function TopicPage() {
                   {/* ID and Year of the object */}
                 </a>
                 <p>
-                  Datei: {item.id}
+                  Datei-tmp-------: {item.id}
                 </p>
                 <div>
                   <span>Jahr: </span>
                   {item.year.join(', ')}
                 </div>
+                <br/>
               </li>
             ))}
           </ul>
