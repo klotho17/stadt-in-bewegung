@@ -6,7 +6,7 @@ export const baseURL = "https://www.bild-video-ton.ch/publish/videostills/Sozarc
 
 // fetching data from the composed URLs
 // give fileNumber as parameter
-// add MissingVideoImage as a placeholder for missing files
+// add MissingVideoImage as a placeholder for missing files in page return
 // ...ad cache for the video files
 export async function fetchImage(id) {
     
@@ -26,7 +26,7 @@ export async function fetchImage(id) {
         // Try fetching the .jpg URL first
         const response = await fetch(jpgURL, { method: 'HEAD' });
         if (response.ok) {
-            return jpgURL; // Return the .mp4 URL if it exists
+            return jpgURL; // Return the URL if it exists
         }
     } catch (error) {
         console.warn(`Error fetching .jpg for file ${fileNumber}: ${error.message}`);

@@ -8,6 +8,7 @@ import { createTreemap } from './utils/treemap'; // create the treemap visualisa
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import YearRangeSlider from './components/YearRangeSlider'
+import { filter } from 'd3';
 
 export default function StartPage() {
   const [objects, setObjects] = useState(null);
@@ -17,6 +18,9 @@ export default function StartPage() {
   const treemapContainerRef = useRef(null);
   const [treemapData, setTreemapData] = useState(null);
   const [topicImages, setTopicImages] = useState({});
+  const [initialData, setInitialData] = useState(null);
+  const [maxTotalValue, setMaxTotalValue] = useState(null);
+
   const router = useRouter();
 
   // Year filter state - array for range slider
@@ -52,8 +56,14 @@ export default function StartPage() {
         }
 
         // treemap data with all years and topics
-        const initialData = prepareTreemapData(objects);
-        setTreemapData(initialData);
+        const initialData = prepareTreemapData(objects, null);
+        setInitialData(initialData);
+        //setTreemapData(initialData);
+
+        // Calculate and set the maxTotalValue once
+        const calculatedMax = initialData.reduce((sum, d) => sum + (Number(d.value) || 0), 0);
+        setMaxTotalValue(calculatedMax);
+
         console.log("Objects used for Treemap", objects);
         console.log("Initial Treemap Data with Topic Frequency", initialData);
         setLoading(false);
@@ -70,20 +80,22 @@ export default function StartPage() {
     if (objects && yearRange) {
       const filteredData = prepareTreemapData(
         objects,
-        { from: yearRange.values[0], to: yearRange.values[1] }
+        { from: yearRange.values[0], to: yearRange.values[1] },
       );
       setTreemapData(filteredData);
+      console.log("Objects used for Treemap now", filteredData);
+      console.log("Initial Treemap Data with Topic Frequency", initialData);
     }
   }, [objects, yearRange]);
 
   // Render treemap when data changes
-  useEffect(() => {
-    if (treemapData && treemapContainerRef.current) {
-      createTreemap("treemap-container", treemapData, (topic) => {
-        router.push(`/themen/${encodeURIComponent(topic)}?von=${yearRange.values[0]}&bis=${yearRange.values[1]}`);
-      });
-    }
-  }, [treemapData, yearRange.values, router]);
+  /*   useEffect(() => {
+      if (treemapData && treemapContainerRef.current) {
+        createTreemap("treemap-container", treemapData, (topic) => {
+          router.push(`/themen/${encodeURIComponent(topic)}?von=${yearRange.values[0]}&bis=${yearRange.values[1]}`);
+        });
+      }
+    }, [treemapData, yearRange.values, router]); */
 
   // Fetch images for topics when data or year range changes
   useEffect(() => {
@@ -107,7 +119,7 @@ export default function StartPage() {
 
   // Create treemap with images, container width and year range in URL
   useEffect(() => {
-    if (treemapData && treemapContainerRef.current) {
+    if (treemapData && treemapContainerRef.current && maxTotalValue !== null) {
       createTreemap(
         "treemap-container",
         treemapData,
@@ -115,10 +127,11 @@ export default function StartPage() {
           router.push(`/themen/${encodeURIComponent(topic)}?von=${yearRange.values[0]}&bis=${yearRange.values[1]}`);
         },
         topicImages,
-        containerWidth 
+        initialData,  // Pass the initialData as absoluteData
+        maxTotalValue // Pass the pre-calculated max value
       );
     }
-  }, [treemapData, router, topicImages, containerWidth, yearRange.values]);
+  }, [treemapData, router, topicImages, containerWidth, yearRange.values, initialData, maxTotalValue]);
 
   // Update container width on resize
   useEffect(() => {

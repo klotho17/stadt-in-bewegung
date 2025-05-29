@@ -80,7 +80,7 @@ export default function SingleEntryPage() {
 
   return (
     <div>
-      <h1>{entry.title}</h1>
+      <h1 dangerouslySetInnerHTML={{ __html: entry.title }}></h1>
       <div>
         <div>
           <div>
@@ -104,20 +104,6 @@ export default function SingleEntryPage() {
             </div>
           )}
         </div>
-        {/* Embed video still image or display placeholder */}
-        <div className="image-container">
-          {imgURL ? (
-            <img
-              src={imgURL}
-              alt={entry.title}
-              width={640}
-              height={360}
-              className="object-cover"
-            />
-          ) : (
-            <MissingVideoImage width={640} height={360} />
-          )}
-        </div>
         {/* Embed video or display placeholder */}
         <div className="media-container">
           {isVideo ? (
@@ -132,6 +118,14 @@ export default function SingleEntryPage() {
               />
               Your browser does not support the video tag.
             </video>
+          ) : imgURL ? (
+            <img
+              src={imgURL}
+              alt={entry.title}
+              width={640}
+              height={360}
+              style={{ objectFit: 'cover', background: '#000' }}
+            />
           ) : (
             <MissingVideoImage width={640} height={360} />
           )}
@@ -140,7 +134,7 @@ export default function SingleEntryPage() {
 
       <div>
         <h2>Abstract</h2>
-        <p>{entry.abstract || 'N/A'}</p>
+        <p dangerouslySetInnerHTML={{ __html: entry.abstract }}></p>
       </div>
 
       {/* Adjacent entries navigation */}

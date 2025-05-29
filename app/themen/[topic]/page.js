@@ -3,6 +3,7 @@
 import { getRecordList } from '@/app/api/get-record-list'; // API-call to fetch records of a specific topic
 import { fetchImage } from '@/app/utils/imageurl';
 import { fetchVideo } from '@/app/utils/videourl';
+import MissingVideoImage from '@/app/components/MissingVideoImage'; // placeholder for missing video or image
 
 import { useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
@@ -45,17 +46,17 @@ export default function TopicPage() {
 
   // load images for items in year range... and videos?
   useEffect(() => {
-  async function loadImagesAndVideos() {
-    const images = {};
-    const videos = {};
-    for (const item of inRange) {
-      images[item.id] = await fetchImage(item.id);
-      videos[item.id] = await fetchVideo(item.id);
+    async function loadImagesAndVideos() {
+      const images = {};
+      const videos = {};
+      for (const item of inRange) {
+        images[item.id] = await fetchImage(item.id);
+        videos[item.id] = await fetchVideo(item.id);
+      }
+      setItemImages(images);
+      setItemVideos(videos);
     }
-    setItemImages(images);
-    setItemVideos(videos);
-  }
-  if (inRange.length > 0) loadImagesAndVideos();
+    if (inRange.length > 0) loadImagesAndVideos();
   }, [topic, from, to, filteredItems]);
 
   // helper function to check if item is in the specified year range
@@ -67,7 +68,7 @@ export default function TopicPage() {
     return item.year >= from && item.year <= to;
   }
 
-// insert click?
+  // insert click?
 
   // --------------------------  Visual Website Return ------------------------------- //
 
@@ -80,46 +81,63 @@ export default function TopicPage() {
         {from && to ? ` ${inRange.length} aus der Zeit ${from}–${to}` : ""}
       </h1>
       <ul>
-          {inRange.map((item) => (
-    <li
-      key={item.id}
-      style={{ position: 'relative', cursor: 'pointer' }}
-      onClick={() => setActiveId(activeId === item.id ? null : item.id)}
-    >
-      {activeId === item.id && itemVideos[item.id] ? (
-        <video
-          src={itemVideos[item.id]}
-          poster={itemImages[item.id]}
-          width={320}
-          height={180}
-          autoPlay
-          muted
-          controls
-          style={{ objectFit: 'cover', background: '#000' }}
-        />
-      ) : (
-        <video
-          src={itemVideos[item.id]}
-          poster={itemImages[item.id]}
-          width={320}
-          height={180}
-          preload="metadata"
-          controls={true}
-          style={{ objectFit: 'cover', background: '#000' }}
-        />
-      )}
+        {inRange.map((item) => (
+          <li
+            key={item.id}
+            style={{ position: 'relative' }}
+          >
+            {activeId === item.id && itemVideos[item.id] ? (
+              // Show video when active and video exists
+              <video
+                src={itemVideos[item.id]}
+                poster={itemImages[item.id]}
+                width={320}
+                height={180}
+                muted
+                controls
+                style={{ objectFit: 'cover', background: '#000', cursor: 'pointer' }}
+              />
+            ) : itemVideos[item.id] ? (
+              // Show video frame (poster) if video exists
+              <video
+                src={itemVideos[item.id]}
+                poster={itemImages[item.id]}
+                width={320}
+                height={180}
+                preload="metadata"
+                controls={true}
+                style={{ objectFit: 'cover', background: '#000', cursor: 'pointer' }}
+                onClick={() => setActiveId(activeId === item.id ? null : item.id)}
+              />
+            ) : itemImages[item.id] ? (
+              // Show image if no video but image exists
+              <img
+                src={itemImages[item.id]}
+                alt={item.title}
+                width={320}
+                height={180}
+                style={{ objectFit: 'cover', background: '#000', cursor: 'pointer' }}
+              />
+            ) : (
+              // Show placeholder if neither video nor image exists
+              //or atm are not loaded yet....
+              <MissingVideoImage width={320} height={180} />
+            )}
+            
             <a href={`/objekt/${item.id}`} className="block">
               {/* title of the object */}
-              <h3 className="font-medium">{item.title}</h3>
+              <h2 dangerouslySetInnerHTML={{ __html: item.title }}></h2>
             </a>
+
             {/* ID and Year of the object */}
+
+            <h3>
+              <span>Jahr: </span>
+              {item.year.join(', ')}
+            </h3>
             <p>
               Datei-tmp-------: {item.id}
             </p>
-            <div>
-              <span>Jahr: </span>
-              {item.year.join(', ')}
-            </div>
             {/* other tobic tags the object has */}
             {item.topic && item.topic.length > 1 && (
               <div>
