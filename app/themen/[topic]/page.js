@@ -51,7 +51,9 @@ export default function TopicPage() {
       const videos = {};
       for (const item of inRange) {
         images[item.id] = await fetchImage(item.id);
+        setItemImages({ ...images }); // update state after each image, to load from top
         videos[item.id] = await fetchVideo(item.id);
+        setItemVideos({ ...videos }); // update state after each video, to load from top
       }
       setItemImages(images);
       setItemVideos(videos);
@@ -75,7 +77,7 @@ export default function TopicPage() {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div>
+    <div className="topic-page">
       <h1>
         {filteredItems.length} Einträge zum Thema &quot;{topic}&quot;,
         {from && to ? ` ${inRange.length} aus der Zeit ${from}–${to}` : ""}
@@ -123,7 +125,7 @@ export default function TopicPage() {
               //or atm are not loaded yet....
               <MissingVideoImage width={320} height={180} />
             )}
-            
+
             <a href={`/objekt/${item.id}`} className="block">
               {/* title of the object */}
               <h2 dangerouslySetInnerHTML={{ __html: item.title }}></h2>
@@ -151,7 +153,7 @@ export default function TopicPage() {
       </ul>
       {outOfRange.length > 0 && (
         <div>
-          <h2>Weitere Einträge zum Thema &quot;{topic}&quot;</h2>
+          <h2>Einträge zum Thema &quot;{topic}&quot; aus anderen Jahren</h2>
           <ul>
             {outOfRange.map((item) => (
               <li key={item.id}>

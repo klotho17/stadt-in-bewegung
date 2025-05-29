@@ -86,9 +86,9 @@ export default function StartPage() {
       console.log("Objects used for Treemap now", filteredData);
       console.log("Initial Treemap Data with Topic Frequency", initialData);
     }
-  }, [objects, yearRange]);
+  }, [objects, yearRange, initialData]);
 
-  // Render treemap when data changes
+  // Render treemap when data changes - but i think that's acctually not necessary
   /*   useEffect(() => {
       if (treemapData && treemapContainerRef.current) {
         createTreemap("treemap-container", treemapData, (topic) => {
@@ -97,24 +97,28 @@ export default function StartPage() {
       }
     }, [treemapData, yearRange.values, router]); */
 
-  // Fetch images for topics when data or year range changes
+  // Fetch images for topics when data or year range changes - maybe a bit too much
   useEffect(() => {
-    async function updateTreemapAndImages() {
-      if (objects && yearRange) {
-        const filteredData = prepareTreemapData(
-          objects,
-          { from: yearRange.values[0], to: yearRange.values[1] }
-        );
-        setTreemapData(filteredData);
+    const timer = setTimeout(() => {
+      async function updateTreemapAndImages() {
+        if (objects && yearRange) {
+          const filteredData = prepareTreemapData(
+            objects,
+            { from: yearRange.values[0], to: yearRange.values[1] }
+          );
+          setTreemapData(filteredData);
 
-        // Get all topics from filteredData
-        const topics = filteredData.map(d => d.name);
-        // Fetch images for each topic
-        const images = await getTreemapImages(objects, topics, yearRange.values[0], yearRange.values[1]);
-        setTopicImages(images);
+          // Get all topics from filteredData
+          const topics = filteredData.map(d => d.name);
+          // Fetch images for each topic
+          const images = await getTreemapImages(objects, topics, yearRange.values[0], yearRange.values[1]);
+          setTopicImages(images);
+        }
       }
-    }
-    updateTreemapAndImages();
+      updateTreemapAndImages();
+    }, 500); // delay
+
+    return () => clearTimeout(timer);
   }, [objects, yearRange]);
 
   // Create treemap with images, container width and year range in URL
@@ -157,7 +161,7 @@ export default function StartPage() {
 
   // --------------------------  Visual Website Return ------------------------------- //
   return (
-    <div>
+    <div className="start-page">
       <h1>Stadt in Bewegung - visualisierter Sammlungszugang</h1>
 
       {/* Year Range Filter */}

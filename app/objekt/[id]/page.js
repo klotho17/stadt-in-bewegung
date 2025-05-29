@@ -10,7 +10,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function SingleEntryPage() {
+export default function ObjectPage() {
   const { id } = useParams();
   const decodedId = decodeURIComponent(id); // solve this nicer later maybe
   const router = useRouter();
@@ -79,7 +79,7 @@ export default function SingleEntryPage() {
   console.log("Is Video:", isVideo);
 
   return (
-    <div>
+    <div className="object-page">
       <h1 dangerouslySetInnerHTML={{ __html: entry.title }}></h1>
       <div>
         <div>
