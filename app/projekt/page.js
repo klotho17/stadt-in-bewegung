@@ -4,7 +4,7 @@ import Link from 'next/link';
 export default function ProjectPage() {
   return (
     <div className="project-page">
-      // Add a link to the main page
+      {/* Add a link to the main page */}
       <ProjectIcon width={70} height={40} />
       
       <h1>Projekt</h1>
