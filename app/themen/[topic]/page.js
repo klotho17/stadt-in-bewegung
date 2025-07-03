@@ -3,6 +3,7 @@
 import { getRecordList } from '@/app/api/get-record-list'; // API-call to fetch records of a specific topic
 import { fetchImage } from '@/app/utils/imageurl';
 import { fetchVideo } from '@/app/utils/videourl';
+import SideNav from '@/app/components/SideNav';
 import MissingVideoImage from '@/app/components/MissingVideoImage'; // placeholder for missing video or image
 
 import { useEffect, useState } from 'react';
@@ -70,24 +71,24 @@ export default function TopicPage() {
     return item.year >= from && item.year <= to;
   }
 
-  // insert click?
-
   // --------------------------  Visual Website Return ------------------------------- //
 
   if (loading) return <div>Loading...</div>;
 
   return (
     <div className="topic-page">
+      <SideNav from={from} to={to} />
+      
       <h1>
-        {filteredItems.length} Einträge zum Thema &quot;{topic}&quot;,
-        {from && to ? ` ${inRange.length} aus der Zeit ${from}–${to}` : ""}
+        {filteredItems.length} Einträge zum Thema &quot;{topic}&quot;
+      </h1>
+      <h1>
+        {from && to ? ` ${inRange.length} davon aus der Zeit ${from}–${to}` : ""}
       </h1>
       <ul>
         {inRange.map((item) => (
-          <li
-            key={item.id}
-            style={{ position: 'relative' }}
-          >
+          <li key={item.id} style={{ position: 'relative' }} marker="none" >
+            <div className="item-flex">
             {activeId === item.id && itemVideos[item.id] ? (
               // Show video when active and video exists
               <video
@@ -95,7 +96,6 @@ export default function TopicPage() {
                 poster={itemImages[item.id]}
                 width={320}
                 height={180}
-                muted
                 controls
                 style={{ objectFit: 'cover', background: '#000', cursor: 'pointer' }}
               />
@@ -125,12 +125,12 @@ export default function TopicPage() {
               //or atm are not loaded yet....
               <MissingVideoImage width={320} height={180} />
             )}
+            <div className="item-info">
 
-            <a href={`/objekt/${item.id}`} className="block">
+            <a href={`/objekt/${item.id}?topic=${encodeURIComponent(topic)}`} className="block">
               {/* title of the object */}
               <h2 dangerouslySetInnerHTML={{ __html: item.title }}></h2>
             </a>
-
             {/* ID and Year of the object */}
 
             <h3>
@@ -142,11 +142,24 @@ export default function TopicPage() {
             </p>
             {/* other tobic tags the object has */}
             {item.topic && item.topic.length > 1 && (
-              <div>
+              <p>
                 <span>Weitere Themen: </span>
-                {item.topic.filter(t => t !== topic).join(', ')}
-              </div>
+                {item.topic
+                  .filter(t => t !== topic)
+                  .map(t => (
+                    <a key={t} href={`/objekt/${t}`}>
+                      {t}
+                    </a>
+                  ))
+                  .reduce((prev, curr) => [prev, " ", curr])}
+              </p>
             )}
+            <a href={`/objekt/${item.id}?topic=${encodeURIComponent(topic)}`} className="block">
+              {/* title of the object */}
+              <p> → mehr über das Video </p>
+            </a>
+            </div>
+            </div>
             <br />
           </li>
         ))}

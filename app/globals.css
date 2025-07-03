@@ -1,13 +1,6 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
 html,
@@ -30,50 +23,103 @@ body {
   margin: 0;
 }
 
+/* Links and underline decorations */
 a {
-  color: inherit;
+  text-decoration: none;
+
+}
+a > p {
   text-decoration: underline;
+  color: white;
+}
+p > a {
+  text-decoration: underline;
+  color: white;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+/*remove bullet point for list*/
+li {
+  list-style: none;
 }
 
-/* Main Page start-page */
+/* ----- Main Page start-page */
 
-/* Filtered Topics Page topic-page */
+/* ----- Filtered Topics Page topic-page ----- */
 .topic-page {
   padding: 2rem;
 }
 
-/* Single Object Page object-page */
+/* Video + Text Flex Box */
+
+.item-flex {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 800px) {
+  .item-flex {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .item-info {
+    flex: 1 1 0;
+    max-width: 600px;
+  }
+  .media-container {
+    flex: 0 0 auto;
+    margin-left: 2rem;
+  }
+}
+
+/* ----- Single Object Page object-page ----- */
 .object-page {
   padding: 2rem;
 }
 
-/* Titles and paragraphs */
+.abstract-button {
+  background: none;
+  border: none;
+  color: #337ab7;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+/* ----- Footer ----- */
+footer {
+  margin-top: 2rem;
+  padding: 1rem;
+  text-align: right;
+  background-color:rgb(48, 48, 48);
+  color:rgb(255, 255, 255);
+  font-size: 0.95rem;
+}
+
+/* /// Titles and paragraphs /// */
 
 h1 {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  color:aquamarine;
+  color:rgb(147, 147, 147);
 }
 h2 {
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
-  color: green;
+  color: rgb(180, 180, 180);
 }
 
 /* Year Range Slider */
 
 .year-range-slider {
-  width: 100%;
-  padding: 0rem 3rem;
-  margin: 2rem 0rem;
+  width: 96%;
+  padding: 0rem 1.5rem;
+  margin: 2rem 2%;
+  background-color: grey;
+  position: center;
+  border-radius: 0.25rem;
 }
 
 .year-labels {
@@ -86,26 +132,26 @@ h2 {
   position: absolute;
   transform: translateX(-50%);
   font-size: 0.9rem;
-  color: pink;
-  background-color:rgb(144, 144, 144);
+  color: black;
+  background-color: none;
 }
 
 .slider-track {
   height: 1 rem;
-  background: #816c6c;
+  padding: 0.2rem 0;
   border-radius: 0.25rem;
 }
 
 .slider-thumb {
-  height: 1rem;
-  width: 1rem;
+  height: 0rem;
+  width: 0rem;
   border-radius: 50%;
-  background: #3b82f6;
+  background:rgba(59, 131, 246, 0.43);
   display: flex;
   justify-content: center;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   outline: none;
-  color: yellowgreen;
+  color: red;
 }
 
 .slider-thumb.dragged {
@@ -114,15 +160,21 @@ h2 {
 
 .thumb-value {
   position: absolute;
-  top: -1rem;
+  top: -2.5rem;
   font-size: 0.9rem;
   background: white;
   /* padding: 0.25rem 0.5rem; */
-  border: 0.1rem;
+  border: 0.5rem;
+  border-color: red;
   padding: 0.2rem;
-  border-color: #ffffff;
   border-radius: 0.25rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* come back to maybe*/
+.thumb-value-from {
+}
+
+.thumb-value-to {
 }
 
 .current-range {
@@ -132,10 +184,52 @@ h2 {
   font-size: 0.875rem;
 }
 
+.slider-thumb-line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #ffffff;
+  z-index: 1;
+  transform: translateY(-50%);
+}
+
 @media (max-width: 700px) {
   .year-label {
-    display: none;
+    font-size: 0.4rem;
+    text-align: center;
+    padding: 0.3rem 0;;
   }
+}
+
+/* ----- Side Navigation ----- */
+.side-nav {
+  position: fixed;
+  top: 5rem;
+  right: 0;
+  width: 220px;
+  background: rgba(30,30,30,0.97);
+  color: #fff;
+  padding: 1.5rem 1rem;
+  border-radius: 1rem 0 0 1rem;
+  z-index: 1000;
+  box-shadow: -2px 2px 8px rgba(0,0,0,0.15);
+}
+.side-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.side-nav li {
+  margin-bottom: 1rem;
+}
+.side-nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
+.side-nav a:hover {
+  text-decoration: underline;
 }
 
 /* treemap */

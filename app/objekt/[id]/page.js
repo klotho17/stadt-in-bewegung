@@ -3,6 +3,8 @@
 import { getRecord } from '@/app/api/get-record'; // API-call to fetch a single record
 import { fetchImage } from '@/app/utils/imageurl'; // fetch Image from URL
 import { fetchVideo } from '../../utils/videourl'; // fetch Video from URL
+import { useSearchParams } from 'next/navigation';
+import SideNav from '@/app/components/SideNav';
 import MissingVideoImage from '@/app/components/MissingVideoImage'; // placeholder for missing video or image
 
 import { useEffect, useState } from 'react';
@@ -18,11 +20,9 @@ export default function ObjectPage() {
   const [imgURL, setImgURL] = useState(null);
   const [entry, setEntry] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [adjacentEntries, setAdjacentEntries] = useState({
-    prevYear: [],
-    sameYear: [],
-    nextYear: []
-  });
+  const searchParams = useSearchParams();
+  const topicFromQuery = searchParams.get('topic');
+  const [showFullAbstract, setShowFullAbstract] = useState(false);
 
   //extract short fileNumber for Video and Image URL
   //const fileNumber = id.replace(/^.*Sozarch_Vid_V_/, "");
@@ -45,17 +45,6 @@ export default function ObjectPage() {
       //const currentYear = currentEntry.year ? parseInt(currentEntry.year) : null;
       //const filtered = data.regularItems.filter(item => item.id !== id);
 
-      /*
-      setAdjacentEntries({
-        prevYear: currentYear ? 
-          filtered.filter(item => item.year && parseInt(item.year) === currentYear - 1) : [],
-        sameYear: currentYear ?
-          filtered.filter(item => item.year && parseInt(item.year) === currentYear) : [],
-        nextYear: currentYear ?
-          filtered.filter(item => item.year && parseInt(item.year) === currentYear + 1) : []
-      });
-      */
-
       // Fetch video URL asynchronously and store in state
       const urlV = await fetchVideo(decodedId);
       setVideoURL(urlV);
@@ -70,8 +59,24 @@ export default function ObjectPage() {
     loadData();
   }, [id, router]);
 
+  // --------------------------  Visual Website Return ------------------------------- //
+
   if (loading) return <div>Loading...</div>;
   if (!entry) return <div>Eintrag nicht gefunden</div>;
+
+  // splitting abstract at [Kap. 1]
+  const abstract = entry.abstract || "";
+  const marker = "[Kap. 1]";
+  const breakIndex = abstract.indexOf(marker);
+
+  let abstractFirst = abstract;
+  let abstractRestText = "";
+
+  if (breakIndex !== -1) {
+    abstractFirst = abstract.slice(0, breakIndex);
+    abstractRestText = abstract.slice(breakIndex);
+  }
+
 
   // Check if the videoURL is a video file or a placeholder
   const isVideo = typeof videoURL === 'string' && (videoURL.endsWith('.mp4') || videoURL.endsWith('.m4v'));
@@ -80,28 +85,25 @@ export default function ObjectPage() {
 
   return (
     <div className="object-page">
+      <SideNav topic={topicFromQuery} />
       <h1 dangerouslySetInnerHTML={{ __html: entry.title }}></h1>
+      
       <div>
         <div>
-          <div>
-            <h2>---Datei---:</h2>
-            <p>{entry.id}</p>
-          </div>
-          <div>
-            <h2>Jahr:</h2>
-            <p>{entry.year || 'N/A'}</p>
-          </div>
+          <p>
+            <b><span>Jahr:{" "}</span></b>{entry.year || 'N/A'}
+          </p>
           {entry.topic?.length > 0 && (
-            <div>
-              <h2>Themen</h2>
-              <div>
-                {entry.topic.map(topic => (
+            <p>
+              <b><span>Themen:{" "}</span></b>
+              {entry.topic
+                .map(topic => (
                   <Link key={topic} href={`/themen/${encodeURIComponent(topic)}`}>
-                    {topic},
+                    {topic}
                   </Link>
-                ))}
-              </div>
-            </div>
+                ))
+                .reduce((prev, curr) => [prev, " ", curr])}
+            </p>
           )}
         </div>
         {/* Embed video or display placeholder */}
@@ -134,62 +136,36 @@ export default function ObjectPage() {
 
       <div>
         <h2>Abstract</h2>
-        <p dangerouslySetInnerHTML={{ __html: entry.abstract }}></p>
-      </div>
-
-      {/* Adjacent entries navigation */}
-      <div>
-        <h2>Verwandte Einträge - löschen dafür credits und zurück</h2>
-
-        {entry.year && (
-          <>
-            {adjacentEntries.prevYear.length > 0 && (
-              <div>
-                <h3>Aus dem Vorjahr ({parseInt(entry.year) - 1})</h3>
-                <ul>
-                  {adjacentEntries.prevYear.map(item => (
-                    <li key={item.id}>
-                      <Link
-                        href={`/objekt/${item.id}`}>
-                        {item.title}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {adjacentEntries.sameYear.length > 0 && (
-              <div>
-                <h3>Aus dem gleichen Jahr ({entry.year})</h3>
-                <ul>
-                  {adjacentEntries.sameYear.map(item => (
-                    <li key={item.id}>
-                      <Link href={`/objekt/${item.id}`}>
-                        {item.title}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {adjacentEntries.nextYear.length > 0 && (
-              <div>
-                <h3>Aus dem Folgejahr ({parseInt(entry.year) + 1})</h3>
-                <ul>
-                  {adjacentEntries.nextYear.map(item => (
-                    <li key={item.id}>
-                      <Link href={`/objekt/${item.id}`}>
-                        {item.title}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </>
-        )}
+        <p>
+      <span dangerouslySetInnerHTML={{ __html: abstractFirst }} />
+      {!showFullAbstract && abstractRestText && (
+        <>
+          <br/>
+          <button
+            className="abstract-button"
+            onClick={() => setShowFullAbstract(true)}
+          >
+            Videokapitel anzeigen
+          </button>
+        </>
+      )}
+      {showFullAbstract && abstractRestText && (
+        <>
+          <br/>
+          <span dangerouslySetInnerHTML={{ __html: abstractRestText }} />
+          {" "}
+          <button
+            className="abstract-button"
+            onClick={() => setShowFullAbstract(false)}
+          >
+            Videokapitel zuklappen
+          </button>
+        </>
+      )}
+    </p>
+        <h2> Archiv...Nummer Sozialarchiv...mit Link?: {entry.id} </h2>
+        <h2> Urheber...Copyright</h2>
+        <p> some sort of navigation... zurück zur Themen-Seite / zur Themenübersicht</p>
       </div>
     </div>
   );

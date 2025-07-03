@@ -3,10 +3,10 @@
 import { useCallback } from 'react';
 import { Range } from 'react-range';
 
-export default function YearRangeSlider({ 
-  min, 
-  max, 
-  values, 
+export default function YearRangeSlider({
+  min,
+  max,
+  values,
   onChange,
   step = 1
 }) {
@@ -15,7 +15,7 @@ export default function YearRangeSlider({
       console.warn("Invalid range: min should be less than max");
       return null; // Return nothing if the range is invalid
     }
-  
+
     const totalYears = max - min; // Calculate total range of years
     //console.log("Total years:", totalYears);
     const labelCount = Math.min(50, totalYears); // Limiting number of labels for bigger ranges 
@@ -26,7 +26,7 @@ export default function YearRangeSlider({
     return Array.from({ length: labelCount + 1 }).map((_, i) => {
       const year = min + (i * step);
       return (
-        <span 
+        <span
           key={`year-label-${year}`} // Ensure the key is unique
           className="year-label"
           style={{
@@ -41,16 +41,16 @@ export default function YearRangeSlider({
 
   //console.log("YearRangeSlider props:", { min, max, values });
 
-return (
-  <div className="year-range-slider">
-    <Range
-      values={values}
-      step={step}
-      min={min}
-      max={max}
-      onChange={onChange}
-      renderTrack={({ props, children }) => {
-        // Add key to the track container
+  return (
+    <div className="year-range-slider">
+      <Range
+        values={values}
+        step={step}
+        min={min}
+        max={max}
+        onChange={onChange}
+        renderTrack={({ props, children }) => {
+          // Add key to the track container
           return (
             <div
               {...props}
@@ -61,18 +61,18 @@ return (
                 position: 'relative',
               }}
             >
-              <div 
-        className="year-labels"
-        key="year-labels"  // Add key here
-      >
+              <div
+                className="year-labels"
+                key="year-labels"  // Add key here
+              >
                 {renderYearLabels()}
               </div>
               {children}
             </div>
-        );
-      }}
-      renderThumb={({ props, isDragged, index }) => {
-          // Add key based on index for each thumb
+          );
+        }}
+        renderThumb={({ props, isDragged, index }) => {
+          const isFirst = index === 0;
           return (
             <div
               {...props}
@@ -82,7 +82,10 @@ return (
                 ...props.style,
               }}
             >
-              <span className="thumb-value">
+              <span
+                className={`thumb-value ${isFirst ? 'thumb-value-from' : 'thumb-value-to'}`}
+              >
+                {isFirst ? 'Von ' : 'Bis '}
                 {props['aria-valuenow']}
               </span>
             </div>

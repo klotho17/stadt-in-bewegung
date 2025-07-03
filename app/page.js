@@ -88,15 +88,6 @@ export default function StartPage() {
     }
   }, [objects, yearRange, initialData]);
 
-  // Render treemap when data changes - but i think that's acctually not necessary
-  /*   useEffect(() => {
-      if (treemapData && treemapContainerRef.current) {
-        createTreemap("treemap-container", treemapData, (topic) => {
-          router.push(`/themen/${encodeURIComponent(topic)}?von=${yearRange.values[0]}&bis=${yearRange.values[1]}`);
-        });
-      }
-    }, [treemapData, yearRange.values, router]); */
-
   // Fetch images for topics when data or year range changes - maybe a bit too much
   useEffect(() => {
     const timer = setTimeout(() => {
