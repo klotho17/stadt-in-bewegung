@@ -1,4 +1,5 @@
 import ProjectIcon from './../components/ProjectIcon';
+import Link from 'next/link';
 
 export default function ProjectPage() {
   return (
