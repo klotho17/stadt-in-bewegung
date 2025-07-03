@@ -23,6 +23,26 @@ body {
   margin: 0;
 }
 
+/* Make the page take full height and use flexbox */
+html, body {
+  height: 100%;
+  min-height: 100%;
+}
+
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-wrapper > main {
+  flex: 1 0 auto;
+}
+
+footer {
+  flex-shrink: 0;
+}
+
 /* Links and underline decorations */
 a {
   text-decoration: none;
@@ -37,16 +57,37 @@ p > a {
   color: white;
 }
 
+li > a {
+  color: white;
+}
+
+.side-nav a {
+  text-decoration: underline;
+  color: white;
+}
+
 /*remove bullet point for list*/
 li {
   list-style: none;
 }
 
 /* ----- Main Page start-page */
+.start-page {
+  padding-top: 2rem;
+}
+
+.start-page h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color:rgb(214, 214, 214);
+}
 
 /* ----- Filtered Topics Page topic-page ----- */
 .topic-page {
   padding: 2rem;
+    padding-right: 200px; /* Adjust to side navigation */
 }
 
 /* Video + Text Flex Box */
@@ -68,13 +109,14 @@ li {
   }
   .media-container {
     flex: 0 0 auto;
-    margin-left: 2rem;
+    /*margin-left: 2rem;*/
   }
 }
 
 /* ----- Single Object Page object-page ----- */
 .object-page {
   padding: 2rem;
+  padding-right: 200px; /* Adjust to side navigation */
 }
 
 .abstract-button {
@@ -84,6 +126,11 @@ li {
   cursor: pointer;
   padding: 0;
   text-decoration: underline;
+}
+
+/* ----- Project Page projekt-page ----- */
+.project-page {
+  padding: 2rem;
 }
 
 /* ----- Footer ----- */
@@ -99,11 +146,12 @@ footer {
 /* /// Titles and paragraphs /// */
 
 h1 {
-  font-size: 2rem;
+  font-size: 1.2rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  color:rgb(147, 147, 147);
+  color:rgb(255, 255, 255);
 }
+
 h2 {
   font-size: 1.5rem;
   font-weight: 600;
@@ -206,9 +254,9 @@ h2 {
 .side-nav {
   position: fixed;
   top: 5rem;
-  right: 0;
-  width: 220px;
-  background: rgba(30,30,30,0.97);
+  right: 15px;
+  width: 200px;
+  background: rgba(41, 41, 41, 0.97);
   color: #fff;
   padding: 1.5rem 1rem;
   border-radius: 1rem 0 0 1rem;
@@ -225,7 +273,6 @@ h2 {
 }
 .side-nav a {
   color: #fff;
-  text-decoration: none;
   font-weight: 500;
 }
 .side-nav a:hover {

@@ -19,21 +19,37 @@ export async function getRecord(id) {
         if (!response.ok) {
             console.error(`Error fetching data from ${url}:`, error);
         }
-        
+
         const data = await response.json();
         let record = data["hydra:member"] || [];
-        
+
         console.log("Data from API", record);
 
-        // old return of pure api data
-        // return data["hydra:member"] 
-        return { 
-                id: record[0]["@id"], 
-                title: record[0].title, 
-                year: yearCorrection(record[0].created) || 0,
-                topic: extractTopics(record[0].hasOrHadSubject) || "keine Angabe",
-                abstract: record[0].abstract || "Beschreibung fehlt"
-            }; 
+        // Extract creators/contributors with their roles
+        let creators = [];
+        const main = record[0] || {};
+        const rels = main.recordResourceOrInstantiationIsSourceOfCreationRelation;
+        if (rels) {
+            (Array.isArray(rels) ? rels : [rels]).forEach(rel => {
+                if (rel["@type"] === "rico:CreationRelation" && rel.creationRelationHasTarget) {
+                    const personName = rel.creationRelationHasTarget.name;
+                    const role = rel.type === "creator" ? "Creator" : rel.name ? rel.name : "Contributor";
+                    if (personName) {
+                        creators.push(`${personName} (${role})`);
+                    }
+                }
+            });
+        }
+        console.log("Creators", creators);
+
+        return {
+            id: record[0]["@id"],
+            title: record[0].title,
+            year: yearCorrection(record[0].created) || 0,
+            topic: extractTopics(record[0].hasOrHadSubject) || "keine Angabe",
+            abstract: record[0].abstract || "Beschreibung fehlt",
+            creators: creators.length > 0 ? creators : ["keine Angabe"]
+        };
     } catch (error) {
         console.error(`Error fetching data from ${url}:`, error);
         return null;

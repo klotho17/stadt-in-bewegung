@@ -1,30 +1,63 @@
 'use client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import NavImage from './NavImage';
 
-export default function SideNav({ topic, from, to }) {
+export default function SideNav({ entry, topic, from, to, filteredItems, inRange, page }) {
   const router = useRouter();
 
   return (
     <nav className="side-nav">
       <ul>
-        <li>
-          <Link href="/">Startseite</Link>
-        </li>
-        {(from && to) && (
+        {page === "topic-page" && (
           <li>
-            <span>Zeitraum: {from} – {to}</span>
+            <p>{inRange.length} Videos mit dem Thema </p>
+            <h3>
+              {topic}
+            </h3>
+            <p>
+              {from && to ? `aus ${from}–${to} (von ${filteredItems.length})` : ""}
+            </p>
           </li>
         )}
-        {topic && (
-          <li>
-            <button
+        <li>
+        ← {" "}
+        {/* back to full overview with year filter if available */}
+        {from && to ? (
+        <Link href={`/?von=${from}&bis=${to}`}>
+         Übersicht ({from}–{to}) <br/> <NavImage width={80} height={40} />
+        </Link>
+      ) : (
+        <Link href="/">
+        Übersicht<br/> <NavImage width={80} height={40} />
+        </Link>
+      )}
+      </li>
+        {/* back to the previous topic overview*/}
+        {page==="object-page" && topic && (
+          <li> 
+            <p>← Videoübersicht zu </p>
+            <p
               className="abstract-button"
               onClick={() => router.back()}
               style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', padding: 0 }}
             >
-              ← zurück: {" "}{topic}
-            </button>
+              {" "}{topic}
+            </p>
+          </li>
+        )}
+        {/* if video has other topics */}
+        {entry.topic && entry.topic.length > 1 && (
+          <li>
+            <span>→ weitere Themen dieses Videos: </span>
+            {entry.topic
+              .filter(t => t !== topic)
+              .map(t => (
+                <a key={t} href={`/themen/${t}`}>
+                  {t}
+                </a>
+              ))
+              .reduce((prev, curr) => [prev, " ", curr])}
           </li>
         )}
       </ul>

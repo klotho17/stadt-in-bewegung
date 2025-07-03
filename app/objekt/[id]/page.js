@@ -85,37 +85,35 @@ export default function ObjectPage() {
 
   return (
     <div className="object-page">
-      <SideNav topic={topicFromQuery} />
+      <SideNav page="object-page" entry={entry} topic={topicFromQuery} />
       <h1 dangerouslySetInnerHTML={{ __html: entry.title }}></h1>
-      
+
       <div>
         <div>
           <p>
             <b><span>Jahr:{" "}</span></b>{entry.year || 'N/A'}
           </p>
-          {entry.topic?.length > 0 && (
-            <p>
-              <b><span>Themen:{" "}</span></b>
-              {entry.topic
-                .map(topic => (
-                  <Link key={topic} href={`/themen/${encodeURIComponent(topic)}`}>
-                    {topic}
-                  </Link>
-                ))
-                .reduce((prev, curr) => [prev, " ", curr])}
-            </p>
-          )}
+          <p>
+            <b><span>Beteiligte Personen:{" "}</span></b>
+            {Array.isArray(entry.creators) ? entry.creators.join('; ') : entry.creators || 'N/A'}
+          </p>
         </div>
         {/* Embed video or display placeholder */}
         <div className="media-container">
           {isVideo ? (
-            <video controls width="640" height="360">
+            <video
+              controls
+              width="640"
+              height="360"
+              poster={imgURL || undefined}
+              style={{ background: '#000' }}
+            >
               <source
                 src={videoURL}
                 type={
                   videoURL.endsWith('.mp4') ? 'video/mp4' :
                     videoURL.endsWith('.m4v') ? 'video/x-m4v' :
-                      'video/mp4' // default
+                      'video/mp4'
                 }
               />
               Your browser does not support the video tag.
@@ -135,37 +133,36 @@ export default function ObjectPage() {
       </div>
 
       <div>
-        <h2>Abstract</h2>
+        <h2>Beschreibung</h2>
         <p>
-      <span dangerouslySetInnerHTML={{ __html: abstractFirst }} />
-      {!showFullAbstract && abstractRestText && (
-        <>
-          <br/>
-          <button
-            className="abstract-button"
-            onClick={() => setShowFullAbstract(true)}
-          >
-            Videokapitel anzeigen
-          </button>
-        </>
-      )}
-      {showFullAbstract && abstractRestText && (
-        <>
-          <br/>
-          <span dangerouslySetInnerHTML={{ __html: abstractRestText }} />
-          {" "}
-          <button
-            className="abstract-button"
-            onClick={() => setShowFullAbstract(false)}
-          >
-            Videokapitel zuklappen
-          </button>
-        </>
-      )}
-    </p>
-        <h2> Archiv...Nummer Sozialarchiv...mit Link?: {entry.id} </h2>
+          <span dangerouslySetInnerHTML={{ __html: abstractFirst }} />
+          {!showFullAbstract && abstractRestText && (
+            <>
+              <br />
+              <button
+                className="abstract-button"
+                onClick={() => setShowFullAbstract(true)}
+              >
+                Videokapitel anzeigen
+              </button>
+            </>
+          )}
+          {showFullAbstract && abstractRestText && (
+            <>
+              <br />
+              <span dangerouslySetInnerHTML={{ __html: abstractRestText }} />
+              {" "}
+              <button
+                className="abstract-button"
+                onClick={() => setShowFullAbstract(false)}
+              >
+                Videokapitel zuklappen
+              </button>
+            </>
+          )}
+        </p>
+        <h2> memobase id: {entry.id} </h2>
         <h2> Urheber...Copyright</h2>
-        <p> some sort of navigation... zurück zur Themen-Seite / zur Themenübersicht</p>
       </div>
     </div>
   );

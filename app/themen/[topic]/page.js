@@ -77,14 +77,7 @@ export default function TopicPage() {
 
   return (
     <div className="topic-page">
-      <SideNav from={from} to={to} />
-      
-      <h1>
-        {filteredItems.length} Einträge zum Thema &quot;{topic}&quot;
-      </h1>
-      <h1>
-        {from && to ? ` ${inRange.length} davon aus der Zeit ${from}–${to}` : ""}
-      </h1>
+      <SideNav page="topic-page" entry="null" from={from} to={to} filteredItems={filteredItems} inRange={inRange} topic={topic} />
       <ul>
         {inRange.map((item) => (
           <li key={item.id} style={{ position: 'relative' }} marker="none" >
@@ -129,25 +122,22 @@ export default function TopicPage() {
 
             <a href={`/objekt/${item.id}?topic=${encodeURIComponent(topic)}`} className="block">
               {/* title of the object */}
-              <h2 dangerouslySetInnerHTML={{ __html: item.title }}></h2>
+              <h1 dangerouslySetInnerHTML={{ __html: item.title }}></h1>
             </a>
             {/* ID and Year of the object */}
 
             <h3>
-              <span>Jahr: </span>
-              {item.year.join(', ')}
+              {item.year.join('-')}
             </h3>
-            <p>
-              Datei-tmp-------: {item.id}
-            </p>
+            <br/>
             {/* other tobic tags the object has */}
             {item.topic && item.topic.length > 1 && (
               <p>
-                <span>Weitere Themen: </span>
+                <span>→ weitere Themen: </span>
                 {item.topic
                   .filter(t => t !== topic)
                   .map(t => (
-                    <a key={t} href={`/objekt/${t}`}>
+                    <a key={t} href={`/themen/${t}`}>
                       {t}
                     </a>
                   ))
@@ -172,16 +162,11 @@ export default function TopicPage() {
               <li key={item.id}>
                 <a href={`/objekt/${item.id}`} className="block">
                   {/* title of the object */}
-                  <h3 className="font-medium">{item.title}</h3>
-                  {/* ID and Year of the object */}
+                  <h1 dangerouslySetInnerHTML={{ __html: item.title }}></h1>
                 </a>
                 <p>
-                  Datei-tmp-------: {item.id}
+                  {item.year.join('-')}
                 </p>
-                <div>
-                  <span>Jahr: </span>
-                  {item.year.join(', ')}
-                </div>
                 <br />
               </li>
             ))}

@@ -7,7 +7,6 @@ export const baseURL = "https://www.bild-video-ton.ch/ansicht/media/Sozarch_Vid_
 
 // composing URLs with the fileNumber to embed the videos 
 // returning MissingVideo Image as a placeholder for missing files
-// ...ad cache for the video files
 export async function fetchVideo(id) {
 
     // for custom items return placeholder
