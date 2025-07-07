@@ -4,12 +4,11 @@ import { getAllObjects } from './api/get-record-all'; // API-call for all object
 import { prepareTreemapData } from './utils/treemapdata'; // prepare data from API and custom files for visualisation
 import { getTreemapImages } from './utils/treemapimages'; // get ojbect images from URL
 import { createTreemap } from './utils/treemap'; // create the treemap visualisation
-import ProjectIcon from './components/ProjectIcon';
+import YearRangeSlider from './components/YearRangeSlider'
 
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import YearRangeSlider from './components/YearRangeSlider'
 import { filter } from 'd3';
 
 export default function StartPage() {
