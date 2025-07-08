@@ -42,13 +42,20 @@ export async function getRecord(id) {
         }
         console.log("Creators", creators);
 
+        // Extract archive link from isOrWasPartOf
+        //const archive = main.isOrWasPartOf?.[0]?.hasPart?.[0]?.sameAs || null;
+        const archive = main.sameAs || null;
+
+        console.log("Archive URL:", archive);
+
         return {
             id: record[0]["@id"],
             title: record[0].title,
             year: yearCorrection(record[0].created) || 0,
             topic: extractTopics(record[0].hasOrHadSubject) || "keine Angabe",
             abstract: record[0].abstract || "Beschreibung fehlt",
-            creators: creators.length > 0 ? creators : ["keine Angabe"]
+            creators: creators.length > 0 ? creators : ["keine Angabe"],
+            archive: archive || "keine Angabe",
         };
     } catch (error) {
         console.error(`Error fetching data from ${url}:`, error);

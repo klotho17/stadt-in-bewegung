@@ -187,8 +187,14 @@ export default function ObjectPage() {
             </>
           )}
         </p>
-        <h2> memobase id: {entry.id} </h2>
-        <h2> Urheber...Copyright</h2>
+        {id.startsWith("mbr") && (
+          <>
+            <p> memobase id: {entry.id} </p>
+            <a href={entry.archive} target="_blank" rel="noopener noreferrer">
+              Objekt in der Datenbank Bild + Ton des Schweizerischen Sozialarchiv
+            </a>
+          </>
+        )}
       </div>
     </div>
   );

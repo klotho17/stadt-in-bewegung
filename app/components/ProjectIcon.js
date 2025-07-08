@@ -11,8 +11,6 @@ export default function ProjectIcon({ width = 300, height = 100 }) {
   const bottomMiddleWidth = width * 0.34;
   const bottomRightWidth = width - bottomLeftWidth - bottomMiddleWidth - 4 * gap;
 
-
-
   // Play button dimensions
   const playRadius = height * 0.3535; // Half of (height / √2)
   const cx = width / 2;
