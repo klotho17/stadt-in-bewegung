@@ -38,7 +38,7 @@ export default function SideNav({ entry, topic, from, to, filteredItems, inRange
           <li> 
             <p>← Videoübersicht zu </p>
             <p
-              className="abstract-button"
+              className="back-to-topic"
               onClick={() => router.back()}
               style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', padding: 0 }}
             >

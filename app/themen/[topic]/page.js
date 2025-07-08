@@ -41,7 +41,11 @@ export default function TopicPage() {
   // store items in year range and out of year range
   const inRange = filteredItems.filter(isInYearRange);
   const outOfRange = filteredItems.filter(item => !isInYearRange(item));
-  //const sortedItems = [...inRange, ...outOfRange]; // combined array, not used?
+
+  // Sort both arrays by first year (ascending)
+  inRange.sort((a, b) => (a.year[0] ?? 0) - (b.year[0] ?? 0));
+  outOfRange.sort((a, b) => (a.year[0] ?? 0) - (b.year[0] ?? 0));
+
   console.log("in Range", inRange);
   console.log("out of Range", outOfRange);
 
@@ -134,7 +138,7 @@ export default function TopicPage() {
                   alt={item.title}
                   width={320}
                   height={180}
-                  style={{ objectFit: 'cover', background: '#000'}}
+                  style={{ objectFit: 'cover', background: '#000' }}
                 />
               ) : (
                 // Show spinner if still loading, else show placeholder
@@ -188,7 +192,7 @@ export default function TopicPage() {
           <ul>
             {outOfRange.map((item) => (
               <li key={item.id}>
-                <a href={`/objekt/${item.id}`} className="block">
+                <a href={`/objekt/${item.id}?topic=${encodeURIComponent(topic)}`} className="block">
                   {/* title of the object */}
                   <h1 dangerouslySetInnerHTML={{ __html: item.title }}></h1>
                 </a>

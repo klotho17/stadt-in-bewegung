@@ -14,7 +14,7 @@ import Image from 'next/image';
 
 export default function ObjectPage() {
   const { id } = useParams();
-  const decodedId = decodeURIComponent(id); // solve this nicer later maybe
+  const decodedId = decodeURIComponent(id); 
   const router = useRouter();
   const [videoURL, setVideoURL] = useState(null);
   const [imgURL, setImgURL] = useState(null);
@@ -28,36 +28,60 @@ export default function ObjectPage() {
   //const fileNumber = id.replace(/^.*Sozarch_Vid_V_/, "");
   //console.log("File Number:", fileNumber);
 
+  // Load entry data first
   useEffect(() => {
-    console.log("ID and decoded:", id, decodedId);
     async function loadData() {
-      /* if (!id) {
-        router.push('/404');
-        return;
-      } */
       const data = await getRecord(decodedId);
-      /* if (!data) {
-        router.push('/404');
-        return;
-      } */
       setEntry(data);
-      // Find adjacent entries
-      //const currentYear = currentEntry.year ? parseInt(currentEntry.year) : null;
-      //const filtered = data.regularItems.filter(item => item.id !== id);
-
-      // Fetch video URL asynchronously and store in state
-      const urlV = await fetchVideo(decodedId);
-      setVideoURL(urlV);
-
-      // Fetch video URL asynchronously and store in state
-      const urlI = await fetchImage(decodedId);
-      setImgURL(urlI);
-
       setLoading(false);
     }
-
     loadData();
   }, [id, router]);
+
+  // Load video and image after entry is loaded
+  useEffect(() => {
+    if (!entry) return;
+    let cancelled = false;
+    async function loadMedia() {
+      const urlV = await fetchVideo(decodedId);
+      if (!cancelled) setVideoURL(urlV);
+      const urlI = await fetchImage(decodedId);
+      if (!cancelled) setImgURL(urlI);
+    }
+    loadMedia();
+    return () => { cancelled = true; };
+  }, [entry, decodedId]);
+
+  // useEffect(() => {
+  //   console.log("ID and decoded:", id, decodedId);
+  //   async function loadData() {
+  //     /* if (!id) {
+  //       router.push('/404');
+  //       return;
+  //     } */
+  //     const data = await getRecord(decodedId);
+  //     /* if (!data) {
+  //       router.push('/404');
+  //       return;
+  //     } */
+  //     setEntry(data);
+  //     // Find adjacent entries
+  //     //const currentYear = currentEntry.year ? parseInt(currentEntry.year) : null;
+  //     //const filtered = data.regularItems.filter(item => item.id !== id);
+
+  //     // Fetch video URL asynchronously and store in state
+  //     const urlV = await fetchVideo(decodedId);
+  //     setVideoURL(urlV);
+
+  //     // Fetch video URL asynchronously and store in state
+  //     const urlI = await fetchImage(decodedId);
+  //     setImgURL(urlI);
+
+  //     setLoading(false);
+  //   }
+
+  //   loadData();
+  // }, [id, router]);
 
   // --------------------------  Visual Website Return ------------------------------- //
 
@@ -98,38 +122,40 @@ export default function ObjectPage() {
             {Array.isArray(entry.creators) ? entry.creators.join('; ') : entry.creators || 'N/A'}
           </p>
         </div>
+
         {/* Embed video or display placeholder */}
         <div className="media-container">
-          {isVideo ? (
-            <video
-              controls
-              width="640"
-              height="360"
-              poster={imgURL || undefined}
-              style={{ background: '#000' }}
-            >
-              <source
-                src={videoURL}
-                type={
-                  videoURL.endsWith('.mp4') ? 'video/mp4' :
-                    videoURL.endsWith('.m4v') ? 'video/x-m4v' :
-                      'video/mp4'
-                }
-              />
-              Your browser does not support the video tag.
-            </video>
-          ) : imgURL ? (
-            <img
-              src={imgURL}
-              alt={entry.title}
-              width={640}
-              height={360}
-              style={{ objectFit: 'cover', background: '#000' }}
-            />
-          ) : (
-            <MissingVideoImage width={640} height={360} />
-          )}
-        </div>
+  {videoURL === null && imgURL === null ? (
+    <div style={{ width: 640, height: 360, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="spinner" />
+    </div>
+  ) : isVideo ? (
+    <video
+      controls
+      width="640"
+      height="360"
+      poster={imgURL && imgURL !== "MISSING" ? imgURL : undefined}
+      style={{ background: '#000' }}
+    >
+      <source src={videoURL} type={
+        videoURL.endsWith('.mp4') ? 'video/mp4' :
+        videoURL.endsWith('.m4v') ? 'video/x-m4v' :
+        'video/mp4'
+      } />
+      Your browser does not support the video tag.
+    </video>
+  ) : imgURL && imgURL !== "MISSING" ? (
+    <img
+      src={imgURL}
+      alt={entry.title}
+      width={640}
+      height={360}
+      style={{ objectFit: 'cover', background: '#000' }}
+    />
+  ) : (
+    <MissingVideoImage width={640} height={360} />
+  )}
+</div>
       </div>
 
       <div>

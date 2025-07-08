@@ -12,7 +12,7 @@ export async function fetchImage(id) {
     
     // for custom items return placeholder
         if (!id.startsWith("mbr")) {
-            return null;
+            return "MISSING";
             }
     
     //extract short fileNumber for Video and Image URL
@@ -20,7 +20,6 @@ export async function fetchImage(id) {
     console.log("File Number:", fileNumber);
 
     const jpgURL = `${baseURL}${fileNumber}.jpg`;
-    //const m4vURL = `${baseURL}${fileNumber}.m4v`;
 
     try {
         // Try fetching the .jpg URL first
@@ -32,5 +31,5 @@ export async function fetchImage(id) {
         console.warn(`Error fetching .jpg for file ${fileNumber}: ${error.message}`);
     }
 
-    return null;
+    return "MISSING";
 }

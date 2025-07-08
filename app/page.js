@@ -101,7 +101,32 @@ export default function StartPage() {
       }
     }, [objects, yearRange, initialData]); */
 
-  // Fetch images for topics when data or year range changes
+  // update treemap data on yearRange change
+  useEffect(() => {
+    if (!objects || !yearRange) return;
+    const filteredData = prepareTreemapData(
+      objects,
+      { from: yearRange.values[0], to: yearRange.values[1] }
+    );
+    setTreemapData(filteredData);
+  }, [objects, yearRange]);
+
+  // fetch images once on initial load
+  useEffect(() => {
+    if (!objects || !initialData) return;
+    setTopicImages({}); // clear previous images
+    getTreemapImages(
+      objects,
+      initialData.map(d => d.name),
+      yearRange.min,
+      yearRange.max,
+      (topic, image) => {
+        setTopicImages(prev => ({ ...prev, [topic]: image }));
+      }
+    );
+  }, [objects, initialData]);
+
+  /* // Fetch images for topics when data or year range changes
   useEffect(() => {
     if (!objects || !yearRange) return;
     const filteredData = prepareTreemapData(
@@ -121,31 +146,31 @@ export default function StartPage() {
         setTopicImages(prev => ({ ...prev, [topic]: image }));
       }
     );
-  }, [objects, yearRange]);
+  }, [objects, yearRange]); */
 
   // Fetch images for topics when data or year range changes - maybe a bit too much
- /*  useEffect(() => {
-    const timer = setTimeout(() => {
-      async function updateTreemapAndImages() {
-        if (objects && yearRange) {
-          const filteredData = prepareTreemapData(
-            objects,
-            { from: yearRange.values[0], to: yearRange.values[1] }
-          );
-          setTreemapData(filteredData);
-
-          // Get all topics from filteredData
-          const topics = filteredData.map(d => d.name);
-          // Fetch images for each topic
-          const images = getTreemapImages(objects, topics, yearRange.values[0], yearRange.values[1]);
-          setTopicImages(images);
-        }
-      }
-      updateTreemapAndImages();
-    }, 0); // delay
-
-    return () => clearTimeout(timer);
-  }, [objects, yearRange]); */
+  /*  useEffect(() => {
+     const timer = setTimeout(() => {
+       async function updateTreemapAndImages() {
+         if (objects && yearRange) {
+           const filteredData = prepareTreemapData(
+             objects,
+             { from: yearRange.values[0], to: yearRange.values[1] }
+           );
+           setTreemapData(filteredData);
+ 
+           // Get all topics from filteredData
+           const topics = filteredData.map(d => d.name);
+           // Fetch images for each topic
+           const images = getTreemapImages(objects, topics, yearRange.values[0], yearRange.values[1]);
+           setTopicImages(images);
+         }
+       }
+       updateTreemapAndImages();
+     }, 0); // delay
+ 
+     return () => clearTimeout(timer);
+   }, [objects, yearRange]); */
 
   // Create treemap with images, container width and year range in URL
   useEffect(() => {
