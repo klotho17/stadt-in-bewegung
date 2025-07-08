@@ -46,20 +46,43 @@ export default function TopicPage() {
   console.log("out of Range", outOfRange);
 
   // load images for items in year range... and videos?
+  /*   useEffect(() => {
+      async function loadImagesAndVideos() {
+        const images = {};
+        const videos = {};
+        for (const item of inRange) {
+          images[item.id] = await fetchImage(item.id);
+          setItemImages({ ...images }); // update state after each image, to load from top
+          videos[item.id] = await fetchVideo(item.id);
+          setItemVideos({ ...videos }); // update state after each video, to load from top
+        }
+        setItemImages(images);
+        setItemVideos(videos);
+      }
+      if (inRange.length > 0) loadImagesAndVideos();
+    }, [topic, from, to, filteredItems]); */
+
+  // load images first, then videos for all items in year range
   useEffect(() => {
+    let cancelled = false;
     async function loadImagesAndVideos() {
+      // Load all images first
       const images = {};
-      const videos = {};
       for (const item of inRange) {
         images[item.id] = await fetchImage(item.id);
-        setItemImages({ ...images }); // update state after each image, to load from top
-        videos[item.id] = await fetchVideo(item.id);
-        setItemVideos({ ...videos }); // update state after each video, to load from top
+        if (cancelled) return;
+        setItemImages(prev => ({ ...prev, [item.id]: images[item.id] }));
       }
-      setItemImages(images);
-      setItemVideos(videos);
+      // Load all videos
+      const videos = {};
+      for (const item of inRange) {
+        videos[item.id] = await fetchVideo(item.id);
+        if (cancelled) return;
+        setItemVideos(prev => ({ ...prev, [item.id]: videos[item.id] }));
+      }
     }
     if (inRange.length > 0) loadImagesAndVideos();
+    return () => { cancelled = true; };
   }, [topic, from, to, filteredItems]);
 
   // helper function to check if item is in the specified year range
@@ -82,73 +105,78 @@ export default function TopicPage() {
         {inRange.map((item) => (
           <li key={item.id} style={{ position: 'relative' }} marker="none" >
             <div className="item-flex">
-            {activeId === item.id && itemVideos[item.id] ? (
-              // Show video when active and video exists
-              <video
-                src={itemVideos[item.id]}
-                poster={itemImages[item.id]}
-                width={320}
-                height={180}
-                controls
-                style={{ objectFit: 'cover', background: '#000', cursor: 'pointer' }}
-              />
-            ) : itemVideos[item.id] ? (
-              // Show video frame (poster) if video exists
-              <video
-                src={itemVideos[item.id]}
-                poster={itemImages[item.id]}
-                width={320}
-                height={180}
-                preload="metadata"
-                controls={true}
-                style={{ objectFit: 'cover', background: '#000', cursor: 'pointer' }}
-                onClick={() => setActiveId(activeId === item.id ? null : item.id)}
-              />
-            ) : itemImages[item.id] ? (
-              // Show image if no video but image exists
-              <img
-                src={itemImages[item.id]}
-                alt={item.title}
-                width={320}
-                height={180}
-                style={{ objectFit: 'cover', background: '#000', cursor: 'pointer' }}
-              />
-            ) : (
-              // Show placeholder if neither video nor image exists
+              {activeId === item.id && itemVideos[item.id] ? (
+                // Show video when active and video exists
+                <video
+                  src={itemVideos[item.id]}
+                  poster={itemImages[item.id]}
+                  width={320}
+                  height={180}
+                  controls
+                  style={{ objectFit: 'cover', background: '#000', cursor: 'pointer' }}
+                />
+              ) : itemVideos[item.id] ? (
+                // Show video frame (poster) if video exists
+                <video
+                  src={itemVideos[item.id]}
+                  poster={itemImages[item.id]}
+                  width={320}
+                  height={180}
+                  preload="metadata"
+                  controls={true}
+                  style={{ objectFit: 'cover', background: '#000', cursor: 'pointer' }}
+                  onClick={() => setActiveId(activeId === item.id ? null : item.id)}
+                />
+              ) : itemImages[item.id] ? (
+                // Show image if no video but image exists
+                <img
+                  src={itemImages[item.id]}
+                  alt={item.title}
+                  width={320}
+                  height={180}
+                  style={{ objectFit: 'cover', background: '#000'}}
+                />
+              ) : (
+                // Show spinner if still loading, else show placeholder
+                <div style={{ width: 320, height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div className="spinner" />
+                </div>
+              )}
+              {/*               // Show placeholder if neither video nor image exists
               //or atm are not loaded yet....
               <MissingVideoImage width={320} height={180} />
-            )}
-            <div className="item-info">
+            )} */}
+              <div className="item-info">
 
-            <a href={`/objekt/${item.id}?topic=${encodeURIComponent(topic)}`} className="block">
-              {/* title of the object */}
-              <h1 dangerouslySetInnerHTML={{ __html: item.title }}></h1>
-            </a>
-            {/* ID and Year of the object */}
+                <a href={`/objekt/${item.id}?topic=${encodeURIComponent(topic)}`} className="block">
+                  {/* title of the object */}
+                  <h1 dangerouslySetInnerHTML={{ __html: item.title }}></h1>
+                </a>
+                {/* ID and Year of the object */}
 
-            <h3>
-              {item.year.join('-')}
-            </h3>
-            <br/>
-            {/* other tobic tags the object has */}
-            {item.topic && item.topic.length > 1 && (
-              <p>
-                <span>→ weitere Themen: </span>
-                {item.topic
-                  .filter(t => t !== topic)
-                  .map(t => (
-                    <a key={t} href={`/themen/${t}`}>
-                      {t}
-                    </a>
-                  ))
-                  .reduce((prev, curr) => [prev, " ", curr])}
-              </p>
-            )}
-            <a href={`/objekt/${item.id}?topic=${encodeURIComponent(topic)}`} className="block">
-              {/* title of the object */}
-              <p> → mehr über das Video </p>
-            </a>
-            </div>
+                <h3>
+                  {item.year.join('-')}
+                </h3>
+                <br />
+                {/* other tobic tags the object has */}
+                {item.topic && item.topic.length > 1 && (
+                  <p>
+                    <span>→ weitere Themen: </span>
+                    {item.topic
+                      .filter(t => t !== topic)
+                      .map(t => (
+                        <a key={t} href={`/themen/${t}`}>
+                          {t}
+                        </a>
+                      ))
+                      .reduce((prev, curr) => [prev, " ", curr])}
+                  </p>
+                )}
+                <a href={`/objekt/${item.id}?topic=${encodeURIComponent(topic)}`} className="block">
+                  {/* title of the object */}
+                  <p> → mehr über das Video </p>
+                </a>
+              </div>
             </div>
             <br />
           </li>

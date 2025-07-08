@@ -280,8 +280,23 @@ h2 {
 }
 
 /* treemap */
+
 #treemap-container svg {
   width: 100%;
   height: auto;
   display: block;
+}
+
+/* Spinner for loading images */
+.spinner {
+  border: 8px solid #eee;
+  border-top: 8px solid #333;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  margin: 66px auto;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  100% { transform: rotate(360deg); }
 }

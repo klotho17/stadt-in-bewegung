@@ -1,10 +1,8 @@
 import * as d3 from "d3";
 
-// move to components?
-
 // Helper function to wrap text into lines that fit the rectangle width
-// based on smallest font size
-function wrapText(text, maxWidth, fontSize = 10) {
+// based on smallest font size (10)
+function wrapText(text, maxWidth, fontSize = 12) {
   const words = text.split(' ');
   const lines = [];
   let line = '';
@@ -40,6 +38,7 @@ export function createTreemap(containerId, data, onTopicClick, topicImages = {},
   const totalValue = d3.sum(data, d => Number(d.value) || 0);
   console.log("totalValue", totalValue)
   console.log("maxTotalValue", maxTotalValue)
+  console.log("Input data:", JSON.stringify(data, null, 2));
 
   // Set a base height for the full dataset
   const baseHeight = 1000;
@@ -47,26 +46,37 @@ export function createTreemap(containerId, data, onTopicClick, topicImages = {},
   // Calculate height proportional to full data
   const height = Math.max(100, baseHeight * (totalValue / calculatedMaxTotalValue));
   // Set dimensions
-  const width = container.node().clientWidth || 800;
-  const margin = { top: 0, right: 0, bottom: 0, left: 0 };
+  console.log("Calculated height:", height);
+  const width = container.node().clientWidth || 5000;
+  const margin = { top: 0, right: 1, bottom: 0, left: 0 };
 
   // Create SVG
   const svg = container.append('svg')
     .attr('width', width)
     .attr('height', height)
     .style('background', 'none')
-  //.attr('viewBox', `0 0 ${width} ${height}`); //added
 
+  //didn't this provide, that the treemap adjust in respect to the whole data?
   // Create hierarchical data
-  const root = d3.hierarchy({ children: data })
-    .sum(d => Math.max(Number(d.value) || 1, 1))
-    .sort((a, b) => b.value - a.value);
+  /*   const root = d3.hierarchy({ children: data })
+      .sum(d => Math.max(Number(d.value) || 1, 1))
+      .sort((a, b) => b.value - a.value); */
+
+  const root = d3.hierarchy({
+    name: "root",
+    children: data.map(d => ({ ...d })) // Clone objects
+  })
+    .sum(d => d.value || 0) // Simpler value handling
+    .sort((a, b) => a.value - b.value); // reversed: from smallest to biggest
 
   // Create treemap layout
   const treemap = d3.treemap()
-    .size([width - margin.left - margin.right, height - margin.top - margin.bottom])
+    .tile(d3.treemapResquarify) // custom ratio .ratio(2)
+    .size([
+      width - margin.left - margin.right, 
+      height - margin.top - margin.bottom])
     .padding(1)
-    .round(true);
+    //.round(true);
 
   treemap(root);
 
@@ -120,12 +130,13 @@ export function createTreemap(containerId, data, onTopicClick, topicImages = {},
     .append('text')
     .attr('x', 5)
     .attr('y', function (d) {
-      const fontSize = Math.max(10, d.data.value);
+      const fontSize = Math.max(12, d.data.value);
       return fontSize + 10;
     })
     .each(function (d) {
       const fontSize = Math.max(10, d.data.value);
       const maxWidth = d.x1 - d.x0 - 10;
+      //const lines = wrapText(`${d.data.name}`, maxWidth, fontSize);
       const lines = wrapText(`${d.data.name} [${d.data.value}]`, maxWidth, fontSize);
       lines.forEach((line, i) => {
         d3.select(this)
@@ -136,16 +147,62 @@ export function createTreemap(containerId, data, onTopicClick, topicImages = {},
       });
     })
     .style('font-size', function (d) {
-      return Math.max(10, d.data.value) + 'px';
+      return Math.max(12, d.data.value) + 'px';
     })
+    .style('text-align', 'right')
     .style('fill', '#ffffff')
     .style('font-weight', 'bold')
-    .style('text-shadow', '3px 3px 7px #000000')
-    .style('pointer-events', 'none'); // Make text non-clickable... hä?
+    .style('text-shadow', '1px 1px 4px #000000')
+    .style('pointer-events', 'none')
 
 
   // mouse hover --- work in progress
-  cells
+// Mouse hover functionality
+cells
+  .on('mouseover', function(event, d) {
+    // Bring group to front
+    this.parentNode.appendChild(this);
+    
+    // Get the text element and its bounding box
+    const textElem = d3.select(this).select('text').node();
+    let textBoxWidth = d.x1 - d.x0; // fallback to rect width
+    if (textElem) {
+      const bbox = textElem.getBBox();
+      textBoxWidth = Math.max(bbox.width + 20, d.x1 - d.x0); // ensure at least rect width
+    }
+
+    // Create overlay that covers entire tile (including borders)
+    d3.select(this).insert('rect', 'text')
+      .attr('class', 'hover-overlay')
+      .attr('x', -10)
+      .attr('y', -10)
+      .attr('width', textBoxWidth + 20)
+      .attr('height', d.y1 - d.y0 + 20)
+      .attr('fill', 'rgba(0, 0, 0, 0.85)')
+      .attr('pointer-events', 'none') // Allow clicks to pass through
+      //.attr('stroke', 'rgba(0, 0, 0, 0.85)') // Cover the border too
+      //.attr('stroke-width', 50);
+
+    // Enhance text
+    d3.select(this).select('text')
+      .transition()
+      .duration(200)
+      .style('font-size', `${Math.max(14, d.data.value * 1.2)}px`)
+      //.style('filter', 'drop-shadow(0 0 4px white)');
+  })
+  .on('mouseout', function(event, d) {
+    // Remove overlay
+    d3.select(this).select('.hover-overlay').remove();
+    
+    // Restore text
+    d3.select(this).select('text')
+      .transition()
+      .duration(200)
+      .style('font-size', `${Math.max(12, d.data.value)}px`)
+      .style('filter', 'none');
+  });
+
+  /* cells
     .on('mouseover', function (event, d) {
       // Bring group to front
       this.parentNode.appendChild(this);
@@ -159,23 +216,15 @@ export function createTreemap(containerId, data, onTopicClick, topicImages = {},
     })
     .on('mouseout', function (event, d) {
       // Restore rect fill
-      /* d3.select(this).select('rect')
-        .attr('fill', function(d, i) {
-          // your original fill logic here
-          // e.g. return "#000" or pattern
-          return "#000";
-        }); */
+
 
       // Restore text size
       d3.select(this).select('text')
         .transition()
         .duration(150)
-        /* .style('font-size', d => {
-          const px = Math.max(10, Math.min((d.x1 - d.x0) * 0.15, 32));
-          return `${px}px`;
-        }) */
+
         .style('text-shadow', '3px 3px 7px #000000');
-    });
+    }); */
 
 
 

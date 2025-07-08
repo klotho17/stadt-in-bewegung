@@ -16,7 +16,7 @@ export default function SideNav({ entry, topic, from, to, filteredItems, inRange
               {topic}
             </h3>
             <p>
-              {from && to ? `aus ${from}–${to} (von ${filteredItems.length})` : ""}
+              {from && to ? `aus ${from}–${to}` : ""}
             </p>
           </li>
         )}

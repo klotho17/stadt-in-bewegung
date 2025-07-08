@@ -22,6 +22,7 @@ export default function StartPage() {
   const [initialData, setInitialData] = useState(null);
   const [maxTotalValue, setMaxTotalValue] = useState(null);
 
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const from = parseInt(searchParams.get('von'), 10);
@@ -85,21 +86,45 @@ export default function StartPage() {
     loadData();
   }, []);
 
-  // Update treemap when year range changes
+  /*  DELETE // Update treemap when year range changes
+    useEffect(() => {
+      if (objects && yearRange) {
+        const filteredData = prepareTreemapData(
+          objects,
+          { from: yearRange.values[0], to: yearRange.values[1] },
+        );
+        setTreemapData(filteredData);
+  
+        console.log("Objects used for Treemap now", filteredData);
+        console.log("Initial Treemap Data with Topic Frequency", initialData);
+     
+      }
+    }, [objects, yearRange, initialData]); */
+
+  // Fetch images for topics when data or year range changes
   useEffect(() => {
-    if (objects && yearRange) {
-      const filteredData = prepareTreemapData(
-        objects,
-        { from: yearRange.values[0], to: yearRange.values[1] },
-      );
-      setTreemapData(filteredData);
-      console.log("Objects used for Treemap now", filteredData);
-      console.log("Initial Treemap Data with Topic Frequency", initialData);
-    }
-  }, [objects, yearRange, initialData]);
+    if (!objects || !yearRange) return;
+    const filteredData = prepareTreemapData(
+      objects,
+      { from: yearRange.values[0], to: yearRange.values[1] }
+    );
+    setTreemapData(filteredData);
+
+    // Progressive image loading
+    setTopicImages({}); // clear previous images
+    getTreemapImages(
+      objects,
+      filteredData.map(d => d.name),
+      yearRange.values[0],
+      yearRange.values[1],
+      (topic, image) => {
+        setTopicImages(prev => ({ ...prev, [topic]: image }));
+      }
+    );
+  }, [objects, yearRange]);
 
   // Fetch images for topics when data or year range changes - maybe a bit too much
-  useEffect(() => {
+ /*  useEffect(() => {
     const timer = setTimeout(() => {
       async function updateTreemapAndImages() {
         if (objects && yearRange) {
@@ -112,15 +137,15 @@ export default function StartPage() {
           // Get all topics from filteredData
           const topics = filteredData.map(d => d.name);
           // Fetch images for each topic
-          const images = await getTreemapImages(objects, topics, yearRange.values[0], yearRange.values[1]);
+          const images = getTreemapImages(objects, topics, yearRange.values[0], yearRange.values[1]);
           setTopicImages(images);
         }
       }
       updateTreemapAndImages();
-    }, 500); // delay
+    }, 0); // delay
 
     return () => clearTimeout(timer);
-  }, [objects, yearRange]);
+  }, [objects, yearRange]); */
 
   // Create treemap with images, container width and year range in URL
   useEffect(() => {

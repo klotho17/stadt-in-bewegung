@@ -11,7 +11,7 @@ function getRandomItem(items, topic, from, to) {
 }
 
 // Main function: returns { topicName: imageUrl, ... }
-export async function getTreemapImages(items, topics, from, to) {
+/* export async function getTreemapImages(items, topics, from, to) {
   const topicImages = {};
   for (const topic of topics) {
     const randomItem = getRandomItem(items, topic, from, to);
@@ -22,4 +22,15 @@ export async function getTreemapImages(items, topics, from, to) {
     }
   }
   return topicImages;
+} */
+
+export function getTreemapImages(items, topics, from, to, onImageLoaded) {
+  topics.forEach(async (topic) => {
+    const randomItem = getRandomItem(items, topic, from, to);
+    let image = null;
+    if (randomItem) {
+      image = await fetchImage(randomItem.id);
+    }
+    onImageLoaded(topic, image);
+  });
 }
