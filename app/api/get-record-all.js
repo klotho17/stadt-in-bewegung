@@ -17,13 +17,13 @@ export async function getAllObjects() {
 
         // Map over hydra:member and extract relevant fields for main page
         const objects = data["hydra:member"].map(item => ({
-            id: item["@id"], // e.g. "mbr:soz-016-Sozarch_Vid_V_047" - this is acctually not needed here either?
-            title: item.title || "Titel fehlt", // not used on main page, only for checking
+            id: item["@id"], // e.g. "mbr:soz-016-Sozarch_Vid_V_047" - not needed for visualization but for testing
+            title: item.title || "Titel fehlt", // not needed for visualization but for testing
             year: yearCorrection(item.created) || 0,
             topic: extractTopics(item.hasOrHadSubject) || "keine Angabe",
         }));
 
-        // Add cencored objects to the result
+        // Add censored objects to the result
         const allObjects = [...objects, ...getCustomObjects()];
 
         //console.log("Adjusted and supplemented Data from API", allObjects);
