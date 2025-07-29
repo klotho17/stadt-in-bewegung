@@ -2,8 +2,7 @@
 
 A public web application built with **[Next.js](https://nextjs.org)** (App Router, v15.3.1), deployed on **[Vercel](https://vercel.com/)**. The source code is openly available in this repository.
 
-### The Webapp is available here:
-### [https://stadt-in-bewegung.vercel.app/](https://stadt-in-bewegung.vercel.app/)
+### The Webapp is available here: [https://stadt-in-bewegung.vercel.app/](https://stadt-in-bewegung.vercel.app/)
 
 ## Technical Stack
 
