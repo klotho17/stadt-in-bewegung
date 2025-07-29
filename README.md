@@ -1,40 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Stadt in Bewegung
+
+A public web application built with **[Next.js](https://nextjs.org)** (App Router, v15.3.1), deployed on **[Vercel](https://vercel.com/)**. The source code is openly available in this repository.
+
+## Technical Stack
+
+- **Framework:** [Next.js](https://nextjs.org) (React-based)
+- **Deployment:** [Vercel](https://vercel.com/)
+- **Language:** JavaScript (no TypeScript)
+- **Styling:** Vanilla CSS (no Tailwind)
+- **Font Optimization:** [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) with [Geist](https://vercel.com/font)
+- **Code Quality:** [ESLint](https://eslint.org/) for static analysis
+- **Package Manager:** [npm](https://www.npmjs.com/)
+
+## Project Structure
+
+- Uses Next.js App Router (`/app` directory)
+- Modular organization of components, pages, and API routes
+- Metadata is fetched from the public API of [Memobase](https://memobase.ch/de/recordSet/soz-016)
 
 ## Getting Started
 
-First, run the development server:
+To run the project locally:
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+Open http://localhost:3000 in your browser.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deployment
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+The application is automatically deployed via Vercel's GitHub integration.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Security & Privacy
+- No sensitive data (API keys, passwords, or tokens) is stored in the repository
+- No personal data or credentials are included in the codebase
+- Build artifacts (.next/ directory) are excluded via .gitignore
 
-## Learn More
+## Resources
 
-To learn more about Next.js, take a look at the following resources:
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Vercel Documentation](https://vercel.com/docs)
+- [Memobase API](https://memobase.ch/de/recordSet/soz-016)
+- [Database Bild + Ton](https://www.bild-video-ton.ch/bestand/signatur/F_Videos)
+- With the help of ChatGPT, DeepSeek and GitHub Copilot (Model ChatGPT)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+© Moira Walter, 2025, Digital Humanities Universität Basel
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-## Ressources
-
-With the help of ChatGPT, DeepSeek and GitHub Copilot (ChatGPT)
+All metadata is sourced from Memobase. Media assets (stills/videos) are provided by the Bild + Ton database
+of Schweizerisches Sozialarchiv.
