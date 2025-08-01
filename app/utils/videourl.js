@@ -1,12 +1,7 @@
-// constructing URLs for the videos from bild und ton
-//bsp https://www.bild-video-ton.ch/ansicht/media/Sozarch_Vid_V_001.mp4
-// bps for thumbnail https://www.bild-video-ton.ch/publish/videostills/Sozarch_Vid_V_001.jpg
-
 export const baseURL = "https://www.bild-video-ton.ch/ansicht/media/Sozarch_Vid_V_";
-//import MissingVideoImage from "../components/MissingVideoImage";
+//f.ex. https://www.bild-video-ton.ch/ansicht/media/Sozarch_Vid_V_001.mp4
 
 // composing URLs with the fileNumber to embed the videos 
-// returning MissingVideo Image as a placeholder for missing files
 export async function fetchVideo(id) {
 
     // for custom items return placeholder
@@ -40,7 +35,9 @@ try {
     } catch (error) {
         console.error(`Error fetching .m4v for file ${fileNumber}: ${error.message}`);
     } 
+    
+    console.log("Short File Number for Video URL:", fileNumber);
 
-    // Return the placeholder image if neither .mp4 nor .m4v is available
+    // Insert the placeholder image if neither .mp4 nor .m4v is available
     return null;
 }

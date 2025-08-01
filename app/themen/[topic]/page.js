@@ -4,9 +4,11 @@ import { getRecordList } from '@/app/api/get-record-list'; // API-call to fetch 
 import { fetchImage } from '@/app/utils/imageurl';
 import { fetchVideo } from '@/app/utils/videourl';
 import SideNav from '@/app/components/SideNav';
-import MissingVideoImage from '@/app/components/MissingVideoImage'; // placeholder for missing video or image
+// placeholder for missing video or image not used on this page
+// because custom items can't be total hit
+import MissingVideoImage from '@/app/components/MissingVideoImage';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 
 export default function TopicPage() {
@@ -29,42 +31,37 @@ export default function TopicPage() {
       const recordList = await getRecordList(topic);
       setFilteredItems(recordList);
       console.log("Get Record List from API with function", recordList)
-      console.log("doctype of item.id", typeof recordList[0].id)
-      console.log("FilteredItems", filteredItems)
-
       setLoading(false);
     }
 
     loadData();
   }, [topic, from, to]);
 
+  // helper function to check if item is in the specified year range
+  const isInYearRange = useCallback((item) => {
+    if (!from || !to) return true;
+    if (Array.isArray(item.year)) {
+      return item.year.some(y => y >= from && y <= to);
+    }
+    return item.year >= from && item.year <= to;
+  }, [from, to]);
+  
   // store items in year range and out of year range
-  const inRange = filteredItems.filter(isInYearRange);
-  const outOfRange = filteredItems.filter(item => !isInYearRange(item));
+  // useMemo to avoid recalculating on every render
+  // sort items by year in ascending order
+  const [inRange, outOfRange] = useMemo(() => {
 
-  // Sort both arrays by first year (ascending)
-  inRange.sort((a, b) => (a.year[0] ?? 0) - (b.year[0] ?? 0));
-  outOfRange.sort((a, b) => (a.year[0] ?? 0) - (b.year[0] ?? 0));
+    const inRangeItems = filteredItems.filter(isInYearRange);
+    const outOfRangeItems = filteredItems.filter(item => !isInYearRange(item));
 
-  console.log("in Range", inRange);
-  console.log("out of Range", outOfRange);
+    inRangeItems.sort((a, b) => (a.year[0] ?? 0) - (b.year[0] ?? 0));
+    outOfRangeItems.sort((a, b) => (a.year[0] ?? 0) - (b.year[0] ?? 0));
+    
+    console.log("in Range", inRangeItems);
+    console.log("out of Range", outOfRangeItems);
 
-  // load images for items in year range... and videos?
-  /*   useEffect(() => {
-      async function loadImagesAndVideos() {
-        const images = {};
-        const videos = {};
-        for (const item of inRange) {
-          images[item.id] = await fetchImage(item.id);
-          setItemImages({ ...images }); // update state after each image, to load from top
-          videos[item.id] = await fetchVideo(item.id);
-          setItemVideos({ ...videos }); // update state after each video, to load from top
-        }
-        setItemImages(images);
-        setItemVideos(videos);
-      }
-      if (inRange.length > 0) loadImagesAndVideos();
-    }, [topic, from, to, filteredItems]); */
+    return [inRangeItems, outOfRangeItems];
+  }, [filteredItems, isInYearRange]);
 
   // load images first, then videos for all items in year range
   useEffect(() => {
@@ -73,30 +70,21 @@ export default function TopicPage() {
       // Load all images first
       const images = {};
       for (const item of inRange) {
-        images[item.id] = await fetchImage(item.id);
         if (cancelled) return;
+        images[item.id] = await fetchImage(item.id);
         setItemImages(prev => ({ ...prev, [item.id]: images[item.id] }));
       }
       // Load all videos
       const videos = {};
       for (const item of inRange) {
-        videos[item.id] = await fetchVideo(item.id);
         if (cancelled) return;
+        videos[item.id] = await fetchVideo(item.id);
         setItemVideos(prev => ({ ...prev, [item.id]: videos[item.id] }));
       }
     }
     if (inRange.length > 0) loadImagesAndVideos();
     return () => { cancelled = true; };
-  }, [topic, from, to, filteredItems]);
-
-  // helper function to check if item is in the specified year range
-  function isInYearRange(item) {
-    if (!from || !to) return true;
-    if (Array.isArray(item.year)) {
-      return item.year.some(y => y >= from && y <= to);
-    }
-    return item.year >= from && item.year <= to;
-  }
+  }, [inRange]);
 
   // --------------------------  Visual Website Return ------------------------------- //
 
@@ -146,8 +134,7 @@ export default function TopicPage() {
                   <div className="spinner" />
                 </div>
               )}
-              {/*               // Show placeholder if neither video nor image exists
-              //or atm are not loaded yet....
+              {/* // Show placeholder if neither video nor image exists
               <MissingVideoImage width={320} height={180} />
             )} */}
               <div className="item-info">

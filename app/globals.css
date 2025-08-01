@@ -44,10 +44,6 @@ footer {
 }
 
 /* Links and underline decorations */
-a {
-  text-decoration: none;
-
-}
 a > p {
   text-decoration: underline;
   color: white;
@@ -159,6 +155,7 @@ h1 {
   font-weight: 700;
   margin-bottom: 1rem;
   color:rgb(255, 255, 255);
+  text-decoration: none;
 }
 
 h2 {
@@ -166,6 +163,7 @@ h2 {
   font-weight: 600;
   margin-bottom: 0.75rem;
   color: rgb(180, 180, 180);
+  text-decoration: none;
 }
 
 /* Year Range Slider */
@@ -225,13 +223,6 @@ h2 {
   border-color: red;
   padding: 0.2rem;
   border-radius: 0.25rem;
-}
-
-/* come back to maybe*/
-.thumb-value-from {
-}
-
-.thumb-value-to {
 }
 
 .current-range {

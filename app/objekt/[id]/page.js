@@ -24,10 +24,6 @@ export default function ObjectPage() {
   const topicFromQuery = searchParams.get('topic');
   const [showFullAbstract, setShowFullAbstract] = useState(false);
 
-  //extract short fileNumber for Video and Image URL
-  //const fileNumber = id.replace(/^.*Sozarch_Vid_V_/, "");
-  //console.log("File Number:", fileNumber);
-
   // Load entry data first
   useEffect(() => {
     async function loadData() {
@@ -51,37 +47,6 @@ export default function ObjectPage() {
     loadMedia();
     return () => { cancelled = true; };
   }, [entry, decodedId]);
-
-  // useEffect(() => {
-  //   console.log("ID and decoded:", id, decodedId);
-  //   async function loadData() {
-  //     /* if (!id) {
-  //       router.push('/404');
-  //       return;
-  //     } */
-  //     const data = await getRecord(decodedId);
-  //     /* if (!data) {
-  //       router.push('/404');
-  //       return;
-  //     } */
-  //     setEntry(data);
-  //     // Find adjacent entries
-  //     //const currentYear = currentEntry.year ? parseInt(currentEntry.year) : null;
-  //     //const filtered = data.regularItems.filter(item => item.id !== id);
-
-  //     // Fetch video URL asynchronously and store in state
-  //     const urlV = await fetchVideo(decodedId);
-  //     setVideoURL(urlV);
-
-  //     // Fetch video URL asynchronously and store in state
-  //     const urlI = await fetchImage(decodedId);
-  //     setImgURL(urlI);
-
-  //     setLoading(false);
-  //   }
-
-  //   loadData();
-  // }, [id, router]);
 
   // --------------------------  Visual Website Return ------------------------------- //
 
@@ -145,6 +110,7 @@ export default function ObjectPage() {
       Your browser does not support the video tag.
     </video>
   ) : imgURL && imgURL !== "MISSING" ? (
+    <div>
     <img
       src={imgURL}
       alt={entry.title}
@@ -152,8 +118,23 @@ export default function ObjectPage() {
       height={360}
       style={{ objectFit: 'cover', background: '#000' }}
     />
+    <div style={{
+      marginTop: '-30px',
+      marginBottom: '30px',
+    }}>
+      Video nicht verfügbar in der Datenbank.
+    </div>
+    </div>
   ) : (
-    <MissingVideoImage width={640} height={360} />
+    <div>
+      <MissingVideoImage width={640} height={360} />
+    <div style={{
+      marginTop: '-30px',
+      marginBottom: '30px',
+    }}>
+      Objekt und Informationen nicht verfügbar in der Datenbank.
+    </div>
+    </div>
   )}
 </div>
       </div>
@@ -187,12 +168,13 @@ export default function ObjectPage() {
             </>
           )}
         </p>
+        <br />
         {id.startsWith("mbr") && (
           <>
-            <p> memobase id: {entry.id} </p>
-            <a href={entry.archive} target="_blank" rel="noopener noreferrer">
+            <p>{entry.id}</p>
+            <p><a href={entry.archive} target="_blank" rel="noopener noreferrer">
               Objekt in der Datenbank Bild + Ton des Schweizerischen Sozialarchiv
-            </a>
+            </a></p>
           </>
         )}
       </div>

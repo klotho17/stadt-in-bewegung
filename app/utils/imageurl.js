@@ -1,13 +1,9 @@
-// constructing URLs for the images from bild-video-ton.ch
-// bps for thumbnail https://www.bild-video-ton.ch/publish/videostills/Sozarch_Vid_V_001.jpg
-
 export const baseURL = "https://www.bild-video-ton.ch/publish/videostills/Sozarch_Vid_V_";
-//import MissingVideoImage from "../components/MissingVideoImage";
+// ex. thumbnail https://www.bild-video-ton.ch/publish/videostills/Sozarch_Vid_V_001.jpg
 
+// constructing URLs for the images from bild-video-ton.ch
 // fetching data from the composed URLs
 // give fileNumber as parameter
-// add MissingVideoImage as a placeholder for missing files in page return
-// ...ad cache for the video files
 export async function fetchImage(id) {
     
     // for custom items return placeholder
@@ -30,6 +26,8 @@ export async function fetchImage(id) {
     } catch (error) {
         console.warn(`Error fetching .jpg for file ${fileNumber}: ${error.message}`);
     }
+
+    console.log("Short File Number for Img URL:", fileNumber);
 
     return "MISSING";
 }

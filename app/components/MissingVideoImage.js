@@ -9,7 +9,7 @@ export default function MissingVideoImage({ width= 200, height= 100}) {
         aria-label="Missing Image"
       >
         {/* Grey background */}
-        <rect width="100%" height="100%" fill="#cccccc" />
+        <rect width="100%" height="100%" fill="#666666" />
   
         {/* Black diagonal lines */}
         <line x1="0" y1="0" x2={width} y2={height} stroke="black" strokeWidth="2" />

@@ -4,17 +4,17 @@ import Link from 'next/link';
 export default function ProjectPage() {
   return (
     <div className="project-page">
-      {/* Add a link to the main page */}
-      <ProjectIcon width={70} height={40} />
-      
+      <Link href="/">
+        <ProjectIcon width={70} height={40} />
+      </Link>
+      <br />
       <h1>Projekt</h1>
+      <br />
       <p>
         Informationen zum Projekt/Masterarbeit
         quellenangaben
         Copy-Paste Einleitung, 
-        Link GitHub 
-        Jupytr-Notebook (online stellen)
-        Link Memobase/Sozialarchiv/Bild+Ton
+        <Link href="https://github.com/klotho17/stadt-in-bewegung" target="_blank">Code auf GitHub</Link>
       </p>
     </div>
   );
