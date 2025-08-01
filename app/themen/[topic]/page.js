@@ -169,7 +169,7 @@ export default function TopicPage() {
                     {item.topic
                       .filter(t => t !== topic)
                       .map(t => (
-                        <a key={t} href={`/themen/${t}`}>
+                        <a key={t} href={`/themen/${encodeURIComponent(t)}`}>
                           {t}
                         </a>
                       ))
