@@ -13,7 +13,7 @@ export default function ProjectPage() {
       <p>
         Informationen zum Projekt/Masterarbeit
         quellenangaben
-        Copy-Paste Einleitung, 
+        Copy-Paste Einleitung & Programmdokumentation
         <Link href="https://github.com/klotho17/stadt-in-bewegung" target="_blank">Code auf GitHub</Link>
       </p>
     </div>

@@ -29,25 +29,3 @@ export function getTreemapImages(items, topics, from, to, onImageLoaded) {
     onImageLoaded(topic, image);
   });
 }
-
-// Helper to get a random item for a topic in the year range
-/* function getRandomItem(items, topic, from, to) {
-  const filtered = items.filter(item =>
-    Array.isArray(item.topic) && item.topic.includes(topic) &&
-    item.year && item.year.some(y => y >= from && y <= to)
-  );
-  if (filtered.length === 0) return null;
-  return filtered[Math.floor(Math.random() * filtered.length)];
-} */
-
-
-/* export function getTreemapImages(items, topics, from, to, onImageLoaded) {
-  topics.forEach(async (topic) => {
-    const randomItem = getRandomItem(items, topic, from, to);
-    let image = null;
-    if (randomItem) {
-      image = await fetchImage(randomItem.id);
-    }
-    onImageLoaded(topic, image);
-  });
-} */

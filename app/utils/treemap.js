@@ -56,12 +56,6 @@ export function createTreemap(containerId, data, onTopicClick, topicImages = {},
     .attr('height', height)
     .style('background', 'none')
 
-  //didn't this provide, that the treemap adjust in respect to the whole data?
-  // Create hierarchical data
-  /*   const root = d3.hierarchy({ children: data })
-      .sum(d => Math.max(Number(d.value) || 1, 1))
-      .sort((a, b) => b.value - a.value); */
-
   const root = d3.hierarchy({
     name: "root",
     children: data.map(d => ({ ...d })) // Clone objects
@@ -86,17 +80,12 @@ export function createTreemap(containerId, data, onTopicClick, topicImages = {},
     .enter().append('g')
     .attr('transform', d => `translate(${d.x0 + margin.left},${d.y0 + margin.top})`);
 
-  /*    cells.data().forEach((d, i) => {
-       console.log("rectangles", i, d.data.name, d.x0, d.y0, d.x1, d.y1);
-   }); */
-
   // Add clickable rectangles
   cells.append('rect')
     .attr('width', d => Math.max(1, d.x1 - d.x0))
     .attr('height', d => Math.max(1, d.y1 - d.y0))
     .attr('fill', function (d, i) {
       const imgUrl = topicImages[d.data.name];
-      //const imgUrl = "localhost:3000/file.svg" // temporary placeholder for image URL for less data traffic
       if (imgUrl) {
         // Define a unique pattern for each topic
         const patternId = `img-pattern-${i}`;
@@ -155,8 +144,6 @@ export function createTreemap(containerId, data, onTopicClick, topicImages = {},
     .style('text-shadow', '1px 1px 4px #000000')
     .style('pointer-events', 'none')
 
-
-  // mouse hover --- work in progress
 // Mouse hover functionality
 cells
   .on('mouseover', function(event, d) {
@@ -180,15 +167,12 @@ cells
       .attr('height', d.y1 - d.y0 + 20)
       .attr('fill', 'rgba(0, 0, 0, 0.85)')
       .attr('pointer-events', 'none') // Allow clicks to pass through
-      //.attr('stroke', 'rgba(0, 0, 0, 0.85)') // Cover the border too
-      //.attr('stroke-width', 50);
 
     // Enhance text
     d3.select(this).select('text')
       .transition()
       .duration(200)
       .style('font-size', `${Math.max(14, d.data.value * 1.2)}px`)
-      //.style('filter', 'drop-shadow(0 0 4px white)');
   })
   .on('mouseout', function(event, d) {
     // Remove overlay
@@ -201,32 +185,4 @@ cells
       .style('font-size', `${Math.max(12, d.data.value)}px`)
       .style('filter', 'none');
   });
-
-  /* cells
-    .on('mouseover', function (event, d) {
-      // Bring group to front
-      this.parentNode.appendChild(this);
-
-      // Make text bigger and in front
-      d3.select(this).select('text')
-        .transition()
-        .duration(150);
-      //.style('font-size', '2.5rem')
-      //.style('text-shadow', '10px 10px 7px #ff0000');
-    })
-    .on('mouseout', function (event, d) {
-      // Restore rect fill
-
-
-      // Restore text size
-      d3.select(this).select('text')
-        .transition()
-        .duration(150)
-
-        .style('text-shadow', '3px 3px 7px #000000');
-    }); */
-
-
-
 }
-

@@ -163,10 +163,10 @@ export default function TopicPage() {
                       .reduce((prev, curr) => [prev, " ", curr])}
                   </p>
                 )}
-                <a href={`/objekt/${item.id}?topic=${encodeURIComponent(topic)}`} className="block">
-                  {/* title of the object */}
-                  <p> → mehr über das Video </p>
-                </a>
+                <p>
+                <span>→ </span>
+                <a href={`/objekt/${item.id}?topic=${encodeURIComponent(topic)}`} className="block">mehr über das Video </a>
+                </p>
               </div>
             </div>
             <br />

@@ -36,7 +36,7 @@ export default function ProjectIcon({ width = 300, height = 100 }) {
       height={height}
       viewBox={`0 0 ${width} ${height}`}
       role="img"
-      aria-label="Drawing-based layout with rectangles and play button"
+      aria-label="Five grey rectangles with a play button in the center"
     >
       {/* Top Left */}
       <rect
@@ -102,5 +102,6 @@ export default function ProjectIcon({ width = 300, height = 100 }) {
         fill="white"
       />
     </svg>
+    
   );
 }

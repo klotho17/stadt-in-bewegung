@@ -22,13 +22,16 @@ A public web application built with **[Next.js](https://nextjs.org)** (App Route
 
 ## Getting Started
 
-To run the project locally:
+Prerequesites: 
+- Node.js 18.18 or higher
+- npm
+
+To run the project locally install dependencies and start local developement server:
 
 ```bash
 npm install
 npm run dev
 ```
-Open http://localhost:3000 in your browser.
 
 ## Deployment
 
@@ -47,9 +50,98 @@ The application is automatically deployed via Vercel's GitHub integration.
 - [Database Bild + Ton](https://www.bild-video-ton.ch/bestand/signatur/F_Videos)
 - With the help of ChatGPT, DeepSeek and GitHub Copilot (Model ChatGPT)
 
+## Pages and Navigation
+
+## Data Flow and Functionality
+
 ---
 
 © Moira Walter, 2025, Digital Humanities Universität Basel
 
 All metadata is sourced from Memobase. Media assets (stills/videos) are provided by the Bild + Ton database
 of Schweizerisches Sozialarchiv.
+
+```mermaid
+flowchart TD
+    A[User] --> B[StartPage]
+    B --> C[useEffect: loadData]
+    C --> D[getAllObjects API]
+    D --> E[API Request to Memobase]
+    E --> F[objects array]
+    F --> G[prepareTreemapData]
+    G --> H[initialData]
+    H --> I[setInitialData/setMaxTotalValue]
+    
+    B --> J[YearRangeSlider]
+    J --> K[User changes year range]
+    K --> L[setYearRange]
+    
+    L --> M[useEffect: filter by year]
+    M --> N[prepareTreemapData]
+    N --> O[setTreemapData]
+    
+    O --> P[useEffect: render treemap]
+    P --> Q[createTreemap D3.js]
+    Q --> R[SVG Output]
+    
+    L --> S[debounced useEffect]
+    S --> T[getTreemapImages]
+    T --> U[fetchImage]
+    U --> V[setTopicImages]
+    
+    R --> W[User clicks topic]
+    W --> X[router.push to themen/topic]
+  ```
+
+```mermaid
+  flowchart LR
+    A[User] --> B[StartPage]
+    B -->|click topic| C[TopicPage 1]
+    B -->|footer link| D[ProjectPage]
+    C -->|click object| F[ObjectPage 1]
+    C -->|click topic| E[TopicPage N]
+    C -->|breadcrumb| B
+    C -->|footer link| D
+    D -->|home link| B
+    E -->|click object| G[ObjectPage N]
+    E -->|click object| F
+    E -->|click topic| C
+    E -->|footer link| D
+    E -->|nav link| B
+    F -->|breadcrumb| C
+    F -->|click topic| E
+    F -->|nav link| B
+    F -->|footer link| D
+    G -->|click topic| E
+    G -->|click topic| C
+    G -->|footer link| D
+    G -->|nav link| B
+```
+
+
+The outgoing links are left out in this chart.
+
+```mermaid
+flowchart TD
+    A[(Memobase API)] --> B[getAllObjects]
+    A --> C[getRecordList]
+    A --> D[getRecord]
+    
+    B --> E[prepareTreemapData.js]
+    E --> F[treemapData state]
+    F --> G[treemap.js]
+    G --> H[D3 Visualization]
+    
+    C --> I[filteredItems state]
+    I --> J[...Gallery Component]
+    I --> K[...getTreemapImages.js]
+    K --> L[...topicImages state]
+    
+    D --> M[entry state]
+    M --> N[SingleObject Component]
+    
+    K --> O[imageurl.js]
+    O --> P[...Cloudinary Transformations]
+    D --> Q[videourl.js]
+    Q --> R[Video Embed]
+```
