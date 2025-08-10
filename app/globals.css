@@ -43,6 +43,7 @@ footer {
   flex-shrink: 0;
 }
 
+
 /* Links and underline decorations */
 
 a {
@@ -141,6 +142,7 @@ li {
 /* ----- Project Page projekt-page ----- */
 .project-page {
   padding: 2rem;
+  padding-right: 40%;
 }
 
 /* ----- Footer ----- */
