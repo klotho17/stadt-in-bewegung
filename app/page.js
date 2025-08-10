@@ -163,7 +163,7 @@ export default function StartPage() {
   // --------------------------  Visual Website Return ------------------------------- //
   return (
     <div className="start-page">
-      <h1>Stadt in Bewegung - visualisierter Sammlungszugang</h1>
+      <h1>Audiovisuelles Kulturerbe der Städte in Bewegung 1977-1994</h1>
       {/* Year Range Filter */}
       <div>
         <YearRangeSlider

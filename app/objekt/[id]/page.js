@@ -87,7 +87,7 @@ export default function ObjectPage() {
             {Array.isArray(entry.creators) ? entry.creators.join('; ') : entry.creators || 'N/A'}
           </p>
         </div>
-
+        <br />
         {/* Embed video or display placeholder */}
         <div className="media-container">
   {videoURL === null && imgURL === null ? (

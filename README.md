@@ -51,6 +51,33 @@ The application is automatically deployed via Vercel's GitHub integration.
 - With the help of ChatGPT, DeepSeek and GitHub Copilot (Model ChatGPT)
 
 ## Pages and Navigation
+```mermaid
+  flowchart LR
+    A[User] --> B[StartPage]
+    B -->|click topic| C[TopicPage 1]
+    B -->|footer link| D[ProjectPage]
+    C -->|click object| F[ObjectPage 1]
+    C -->|click topic| E[TopicPage N]
+    C -->|breadcrumb| B
+    C -->|footer link| D
+    D -->|home link| B
+    E -->|click object| G[ObjectPage N]
+    E -->|click object| F
+    E -->|click topic| C
+    E -->|footer link| D
+    E -->|nav link| B
+    F -->|breadcrumb| C
+    F -->|click topic| E
+    F -->|nav link| B
+    F -->|footer link| D
+    G -->|click topic| E
+    G -->|click topic| C
+    G -->|footer link| D
+    G -->|nav link| B
+```
+
+
+*(Outgoing links are left out in this chart.)*
 
 ## Data Flow and Functionality
 
@@ -93,33 +120,7 @@ flowchart TD
     W --> X[router.push to themen/topic]
   ```
 
-```mermaid
-  flowchart LR
-    A[User] --> B[StartPage]
-    B -->|click topic| C[TopicPage 1]
-    B -->|footer link| D[ProjectPage]
-    C -->|click object| F[ObjectPage 1]
-    C -->|click topic| E[TopicPage N]
-    C -->|breadcrumb| B
-    C -->|footer link| D
-    D -->|home link| B
-    E -->|click object| G[ObjectPage N]
-    E -->|click object| F
-    E -->|click topic| C
-    E -->|footer link| D
-    E -->|nav link| B
-    F -->|breadcrumb| C
-    F -->|click topic| E
-    F -->|nav link| B
-    F -->|footer link| D
-    G -->|click topic| E
-    G -->|click topic| C
-    G -->|footer link| D
-    G -->|nav link| B
-```
 
-
-The outgoing links are left out in this chart.
 
 ```mermaid
 flowchart TD
@@ -144,4 +145,64 @@ flowchart TD
     O --> P[...Cloudinary Transformations]
     D --> Q[videourl.js]
     Q --> R[Video Embed]
+```
+
+```mermaid
+flowchart TD
+    A[User] --> B[StartPage app/page.js]
+    B --> C[getAllObjects app/api/get-record-all.js]
+    C --> D[API Request to Memobase]
+    D --> E[API Response: objects array]
+    E --> F[prepareTreemapData app/utils/treemapdata.js]
+    F --> G[createTreemap app/utils/treemap.js]
+    G --> H[D3 Treemap Visualization]
+
+    B --> I[YearRangeSlider app/components/YearRangeSlider.js]
+    I --> J[User changes year range]
+    J --> F
+
+    B --> K[User clicks topic]
+    K --> L[TopicPage app/themen/*topic*/page.js]
+    L --> M[getRecordList app/api/get-record-list.js]
+    M --> N[API Request to Memobase]
+    N --> O[API Response: topic objects]
+    O --> P[filteredItems state]
+    P --> Q[Gallery/List Rendering]
+
+    Q --> R[User clicks object]
+    R --> S[ObjectPage app/objekt/*id*/page.js]
+    S --> T[getRecord app/api/get-record.js]
+    T --> U[API Request to Memobase]
+    U --> V[API Response: single object]
+    V --> W[Object Details Rendering]
+```
+
+```mermaid
+flowchart TD
+    subgraph API
+      A1[get-record-all.js] 
+      A2[get-record-list.js]
+      A3[get-record.js]
+    end
+
+    A1 --> B1[All objects array]
+    B1 --> C1[prepareTreemapData.js]
+    C1 --> D1[treemapData state]
+    D1 --> E1[treemap.js]
+    E1 --> F1[D3 Treemap Visualization]
+    F1 --> G1[YearRangeSlider filter]
+    G1 -.-> D1
+
+    A2 --> B2[Topic objects array]
+    B2 --> C2[filteredItems state]
+    C2 --> D2[Gallery/List Rendering]
+    C2 --> E2[getTreemapImages.js]
+    E2 --> F2[topicImages state]
+
+    A3 --> B3[Single object]
+    B3 --> C3[SingleObject Component]
+    B3 --> D3[videourl.js]
+    D3 --> E3[Video Embed]
+    E2 --> F3[imageurl.js]
+    F3 --> G3[Cloudinary Transformations]
 ```
