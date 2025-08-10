@@ -1,4 +1,4 @@
-# Stadt in Bewegung
+# Audiovisuelles Kulturerbe der Städte in Bewegung 1977-1994
 
 A public web application built with **[Next.js](https://nextjs.org)** (App Router, v15.3.1), deployed on **[Vercel](https://vercel.com/)**. The source code is openly available in this repository.
 

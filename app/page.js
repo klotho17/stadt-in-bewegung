@@ -9,7 +9,6 @@ import YearRangeSlider from './components/YearRangeSlider'
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-//import { filter } from 'd3';
 
 export default function StartPage() {
   const [objects, setObjects] = useState(null);

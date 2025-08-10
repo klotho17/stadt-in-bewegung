@@ -9,8 +9,6 @@ import MissingVideoImage from '@/app/components/MissingVideoImage'; // placehold
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
-import Image from 'next/image';
 
 export default function ObjectPage() {
   const { id } = useParams();

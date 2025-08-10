@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Bewegtbilder der Stadt in Bewegung 1977-1994",
-  description: "Vizualisierter Sammlungszugang zum Bestand 'Stadt in Bewegung'",
+  title: "Audiovisuelles Kulturerbe der Städte in Bewegung 1977-1994",
+  description: "Vizualisierter Sammlungszugang zum Bestand 'Stadt in Bewegung' des Schweizerischen Sozialarchivs",
 };
 
 export default function RootLayout({ children }) {
