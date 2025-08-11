@@ -1,12 +1,13 @@
 'use client';
 
 import { getRecordList } from '@/app/api/get-record-list'; // API-call to fetch records of a specific topic
-import { fetchImage } from '@/app/utils/imageurl';
-import { fetchVideo } from '@/app/utils/videourl';
-import SideNav from '@/app/components/SideNav';
-// placeholder for missing video or image not used on this page
+import { fetchImage } from '@/app/utils/imageurl'; // function to fetch images for items from url
+import { fetchVideo } from '@/app/utils/videourl'; // function to fetch videos for items from url
+import SideNav from '@/app/components/SideNav'; // component for navigation
+
+// placeholder for missing video or image currently not used on this page
 // because custom items can't be total hit
-import MissingVideoImage from '@/app/components/MissingVideoImage';
+// import MissingVideoImage from '@/app/components/MissingVideoImage';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
@@ -46,8 +47,7 @@ export default function TopicPage() {
     return item.year >= from && item.year <= to;
   }, [from, to]);
   
-  // store items in year range and out of year range
-  // useMemo to avoid recalculating on every render
+  // store items in and out of year range
   // sort items by year in ascending order
   const [inRange, outOfRange] = useMemo(() => {
 
@@ -74,7 +74,7 @@ export default function TopicPage() {
         images[item.id] = await fetchImage(item.id);
         setItemImages(prev => ({ ...prev, [item.id]: images[item.id] }));
       }
-      // Load all videos
+      // load all videos
       const videos = {};
       for (const item of inRange) {
         if (cancelled) return;
@@ -88,7 +88,7 @@ export default function TopicPage() {
 
   // --------------------------  Visual Website Return ------------------------------- //
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>Themenseite wird geladen...</div>;
 
   return (
     <div className="topic-page">
@@ -129,22 +129,21 @@ export default function TopicPage() {
                   style={{ objectFit: 'cover', background: '#000' }}
                 />
               ) : (
-                // Show spinner if still loading, else show placeholder
+                // Show spinner if still loading
                 <div style={{ width: 320, height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <div className="spinner" />
                 </div>
               )}
-              {/* // Show placeholder if neither video nor image exists
+              {/* // Show placeholder if neither video nor image exists - not used because custom items can't be total hit
               <MissingVideoImage width={320} height={180} />
             )} */}
               <div className="item-info">
 
                 <a href={`/objekt/${item.id}?topic=${encodeURIComponent(topic)}`} className="block">
-                  {/* title of the object */}
+                {/* title of the object */}
                   <h1 dangerouslySetInnerHTML={{ __html: item.title }}></h1>
                 </a>
-                {/* ID and Year of the object */}
-
+                {/*Year(s) of the object */}
                 <h3>
                   {item.year.join('-')}
                 </h3>
@@ -184,6 +183,7 @@ export default function TopicPage() {
                   <h1 dangerouslySetInnerHTML={{ __html: item.title }}></h1>
                 </a>
                 <p>
+                  {/* Year(s) of the object */}
                   {item.year.join('-')}
                 </p>
                 <br />

@@ -2,9 +2,9 @@ import { getCustomObjects } from "../utils/customobjects";
 import { extractTopics } from "../utils/extracttopics";
 import { yearCorrection } from "../utils/yearcorrection";
 
-// API URLs for records in collection "soz-016" with and certain topic
+// API URLs for records in collection "soz-016" with certain topic
 export const baseURL = "https://api.memobase.ch/record/advancedSearch?q=isOrWasPartOf:mbrs:soz-016+AND+hasOrHadSubject.prefLabel:";
-// API URL for records in collection without topic-tags
+// API URL for records in collection without topic-tags - currently max 100 records
 export const noTopicURL = "https://api.memobase.ch/record/advancedSearch?q=isOrWasPartOf:mbrs:soz-016+AND+NOT+_exists_:hasOrHadSubject&format=json&size=100";
 
 export async function getRecordList(topic) {

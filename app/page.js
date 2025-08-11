@@ -159,10 +159,11 @@ export default function StartPage() {
     }
   }, [from, to]);
 
+  // --------------------------  Visual Website Return ------------------------------- //
+  
   if (loading) return <Loading />;
   if (error) return <div>Error: {error}</div>;
-
-  // --------------------------  Visual Website Return ------------------------------- //
+  
   return (
     <div className="start-page">
       <h1>Audiovisuelles Kulturerbe der Städte in Bewegung 1977-1994</h1>

@@ -22,7 +22,7 @@ export default function SideNav({ entry, topic, from, to, filteredItems, inRange
         )}
         <li>
         ← {" "}
-        {/* back to full overview with year filter if available */}
+        {/* back to full overview with year filter if available from & to */}
         {from && to ? (
         <Link href={`/?von=${from}&bis=${to}`}>
          Übersicht ({from}–{to}) <br/> <NavImage width={80} height={40} />
@@ -33,7 +33,7 @@ export default function SideNav({ entry, topic, from, to, filteredItems, inRange
         </Link>
       )}
       </li>
-        {/* back to the previous topic overview*/}
+        {/* back to the previous topic overview on object page*/}
         {page==="object-page" && topic && (
           <li> 
             <p>← Videoübersicht zu </p>

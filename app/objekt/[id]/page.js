@@ -3,17 +3,16 @@
 import { getRecord } from '@/app/api/get-record'; // API-call to fetch a single record
 import { fetchImage } from '@/app/utils/imageurl'; // fetch Image from URL
 import { fetchVideo } from '../../utils/videourl'; // fetch Video from URL
-import { useSearchParams } from 'next/navigation';
 import SideNav from '@/app/components/SideNav';
-import MissingVideoImage from '@/app/components/MissingVideoImage'; // placeholder for missing video or image
+import MissingVideoImage from '@/app/components/MissingVideoImage'; // placeholder for missing video and image
 
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 
 export default function ObjectPage() {
   const { id } = useParams();
   const decodedId = decodeURIComponent(id); 
-  const router = useRouter();
   const [videoURL, setVideoURL] = useState(null);
   const [imgURL, setImgURL] = useState(null);
   const [entry, setEntry] = useState(null);
@@ -22,7 +21,7 @@ export default function ObjectPage() {
   const topicFromQuery = searchParams.get('topic');
   const [showFullAbstract, setShowFullAbstract] = useState(false);
 
-  // Load entry data first
+  // Load entry data
   useEffect(() => {
     async function loadData() {
       const data = await getRecord(decodedId);
@@ -30,7 +29,7 @@ export default function ObjectPage() {
       setLoading(false);
     }
     loadData();
-  }, [id, router]);
+  }, [id]);
 
   // Load video and image after entry is loaded
   useEffect(() => {
@@ -48,8 +47,8 @@ export default function ObjectPage() {
 
   // --------------------------  Visual Website Return ------------------------------- //
 
-  if (loading) return <div>Loading...</div>;
-  if (!entry) return <div>Eintrag nicht gefunden</div>;
+  if (loading) return <div>Videoseite wird geladen...</div>;
+  if (!entry) return <div>Eintrag nicht gefunden.</div>;
 
   // splitting abstract at [Kap. 1]
   const abstract = entry.abstract || "";
@@ -63,7 +62,6 @@ export default function ObjectPage() {
     abstractFirst = abstract.slice(0, breakIndex);
     abstractRestText = abstract.slice(breakIndex);
   }
-
 
   // Check if the videoURL is a video file or a placeholder
   const isVideo = typeof videoURL === 'string' && (videoURL.endsWith('.mp4') || videoURL.endsWith('.m4v'));

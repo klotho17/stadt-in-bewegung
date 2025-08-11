@@ -3,7 +3,6 @@ import { extractTopics } from "../utils/extracttopics";
 import { yearCorrection } from "../utils/yearcorrection";
 
 export const baseURL = "https://api.memobase.ch/record/advancedSearch?q=@id:"
-// old url: "https://api.memobase.ch/record/soz-016-Sozarch_Vid_V_";
 // new full url example: https://api.memobase.ch/record/advancedSearch?q=@id:mbr%3Asoz-016-Sozarch_Vid_V_001&format=json
 
 // fetching data from the composed URLs

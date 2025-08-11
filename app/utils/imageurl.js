@@ -26,8 +26,6 @@ export async function fetchImage(id) {
     } catch (error) {
         console.warn(`Error fetching .jpg for file ${fileNumber}: ${error.message}`);
     }
-
-    console.log("Short File Number for Img URL:", fileNumber);
-
+    
     return "MISSING";
 }

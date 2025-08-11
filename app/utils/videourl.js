@@ -9,7 +9,7 @@ export async function fetchVideo(id) {
         return null;
         }
 
-    //extract short fileNumber for Video and Image URL
+    // extract short fileNumber for Video and Image URL
     const fileNumber = id.replace(/^.*Sozarch_Vid_V_/, "");
     console.log("File Number:", fileNumber);
 
@@ -17,27 +17,25 @@ export async function fetchVideo(id) {
     const m4vURL = `${baseURL}${fileNumber}.m4v`;
     
 try {
-        // Try fetching the .mp4 URL first
+        // try fetching the .mp4 URL first
         const response = await fetch(mp4URL, { method: 'HEAD' });
         if (response.ok) {
-            return mp4URL; // Return the .mp4 URL if it exists
+            return mp4URL; // return the .mp4 URL if it exists
         }
     } catch (error) {
         console.warn(`Error fetching .mp4 for file ${fileNumber}: ${error.message}`);
     }
 
     try {
-        // Try fetching the .m4v URL as a fallback
+        // try fetching the .m4v URL as a fallback
         const response = await fetch(m4vURL, { method: 'HEAD' });
         if (response.ok) {
-            return m4vURL; // Return the .m4v URL if it exists
+            return m4vURL; // return the .m4v URL if it exists
         }
     } catch (error) {
         console.error(`Error fetching .m4v for file ${fileNumber}: ${error.message}`);
     } 
-    
-    console.log("Short File Number for Video URL:", fileNumber);
 
-    // Insert the placeholder image if neither .mp4 nor .m4v is available
+    // placeholder image is inserted if neither .mp4 nor .m4v is available
     return null;
 }
