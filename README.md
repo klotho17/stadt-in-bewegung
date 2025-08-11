@@ -83,130 +83,43 @@ of Schweizerisches Sozialarchiv.
 
 ## Data Flow and Functionality
 
+```mermaid
+flowchart TD
+    subgraph fetch Metadata from API
+      B[getAllObjects] 
+      C[getRecordList topic]
+      D[getRecord id]
+    end
 
+    
+    B --> E[fetchImage from URL]
+    E --> F[D3 Treemap Visualization]
+    F --> G[YearRangeSlider filter]
+    G --> F
+    B1[getCustomObjects] ---> F
 
+    C --> J[isInYearRange]
+    J ---> K[fetchImage from URL]
+    J ---> L[fetchVideo from URL]
+    K --> M[filtered TopicPage]
+    L --> M
+    C1[getCustomObject] ---> M
+    
+    D --> X[fetchImage from URL]
+    D --> Y[fetchVideo from URL]
+    D -->|not an object| Z[getCustomObject]
 
+    subgraph fetch Media from Database
+      E 
+      K
+      L
+      X
+      Y
+    end
+
+```
+
+*This simplified graph shows the basic data flow and functions.*
 
 ---
 © Moira Walter, 2025, Digital Humanities Universität Basel
-
-
-
-```mermaid
-flowchart TD
-    A[User] --> B[StartPage]
-    B --> C[useEffect: loadData]
-    C --> D[getAllObjects API]
-    D --> E[API Request to Memobase]
-    E --> F[objects array]
-    F --> G[prepareTreemapData]
-    G --> H[initialData]
-    H --> I[setInitialData/setMaxTotalValue]
-    
-    B --> J[YearRangeSlider]
-    J --> K[User changes year range]
-    K --> L[setYearRange]
-    
-    L --> M[useEffect: filter by year]
-    M --> N[prepareTreemapData]
-    N --> O[setTreemapData]
-    
-    O --> P[useEffect: render treemap]
-    P --> Q[createTreemap D3.js]
-    Q --> R[SVG Output]
-    
-    L --> S[debounced useEffect]
-    S --> T[getTreemapImages]
-    T --> U[fetchImage]
-    U --> V[setTopicImages]
-    
-    R --> W[User clicks topic]
-    W --> X[router.push to themen/topic]
-  ```
-
-
-
-```mermaid
-flowchart TD
-    A[(Memobase API)] --> B[getAllObjects]
-    A --> C[getRecordList]
-    A --> D[getRecord]
-    
-    B --> E[prepareTreemapData.js]
-    E --> F[treemapData state]
-    F --> G[treemap.js]
-    G --> H[D3 Visualization]
-    
-    C --> I[filteredItems state]
-    I --> J[...Gallery Component]
-    I --> K[...getTreemapImages.js]
-    K --> L[...topicImages state]
-    
-    D --> M[entry state]
-    M --> N[SingleObject Component]
-    
-    K --> O[imageurl.js]
-    O --> P[...Cloudinary Transformations]
-    D --> Q[videourl.js]
-    Q --> R[Video Embed]
-```
-
-```mermaid
-flowchart TD
-    A[User] --> B[StartPage app/page.js]
-    B --> C[getAllObjects app/api/get-record-all.js]
-    C --> D[API Request to Memobase]
-    D --> E[API Response: objects array]
-    E --> F[prepareTreemapData app/utils/treemapdata.js]
-    F --> G[createTreemap app/utils/treemap.js]
-    G --> H[D3 Treemap Visualization]
-
-    B --> I[YearRangeSlider app/components/YearRangeSlider.js]
-    I --> J[User changes year range]
-    J --> F
-
-    B --> K[User clicks topic]
-    K --> L[TopicPage app/themen/*topic*/page.js]
-    L --> M[getRecordList app/api/get-record-list.js]
-    M --> N[API Request to Memobase]
-    N --> O[API Response: topic objects]
-    O --> P[filteredItems state]
-    P --> Q[Gallery/List Rendering]
-
-    Q --> R[User clicks object]
-    R --> S[ObjectPage app/objekt/*id*/page.js]
-    S --> T[getRecord app/api/get-record.js]
-    T --> U[API Request to Memobase]
-    U --> V[API Response: single object]
-    V --> W[Object Details Rendering]
-```
-
-```mermaid
-flowchart TD
-    subgraph API
-      A1[get-record-all.js] 
-      A2[get-record-list.js]
-      A3[get-record.js]
-    end
-
-    A1 --> B1[All objects array]
-    B1 --> C1[prepareTreemapData.js]
-    C1 --> D1[treemapData state]
-    D1 --> E1[treemap.js]
-    E1 --> F1[D3 Treemap Visualization]
-    F1 --> G1[YearRangeSlider filter]
-    G1 -.-> D1
-
-    A2 --> B2[Topic objects array]
-    B2 --> C2[filteredItems state]
-    C2 --> D2[Gallery/List Rendering]
-    C2 --> E2[getTreemapImages.js]
-    E2 --> F2[topicImages state]
-
-    A3 --> B3[Single object]
-    B3 --> C3[SingleObject Component]
-    B3 --> D3[videourl.js]
-    D3 --> E3[Video Embed]
-    E2 --> F3[imageurl.js]
-    F3 --> G3[Cloudinary Transformations]
-```
