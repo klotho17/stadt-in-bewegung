@@ -29,7 +29,7 @@ export default function ObjectPage() {
       setLoading(false);
     }
     loadData();
-  }, [id]);
+  }, [decodedId]);
 
   // Load video and image after entry is loaded
   useEffect(() => {
