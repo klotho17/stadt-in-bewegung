@@ -39,8 +39,8 @@ The application is automatically deployed via Vercel's GitHub integration.
 
 ## Security & Privacy
 - No sensitive data (API keys, passwords, or tokens) is stored in the repository
-- No personal data or credentials are included in the codebase
 - Build artifacts (.next/ directory) are excluded via .gitignore
+
 
 ## Resources
 
@@ -48,7 +48,9 @@ The application is automatically deployed via Vercel's GitHub integration.
 - [Vercel Documentation](https://vercel.com/docs)
 - [Memobase API](https://memobase.ch/de/recordSet/soz-016)
 - [Database Bild + Ton](https://www.bild-video-ton.ch/bestand/signatur/F_Videos)
-- With the help of ChatGPT, DeepSeek and GitHub Copilot (Model ChatGPT)
+- Buit with the help of ChatGPT 4o, DeepSeek V3 and R, and GitHub Copilot (Model ChatGPT 4.1)
+- All metadata is sourced from Memobase. Media assets (stills/videos) are provided by the Bild + Ton database
+of Schweizerisches Sozialarchiv.
 
 ## Pages and Navigation
 ```mermaid
@@ -81,12 +83,14 @@ The application is automatically deployed via Vercel's GitHub integration.
 
 ## Data Flow and Functionality
 
----
 
+
+
+
+---
 © Moira Walter, 2025, Digital Humanities Universität Basel
 
-All metadata is sourced from Memobase. Media assets (stills/videos) are provided by the Bild + Ton database
-of Schweizerisches Sozialarchiv.
+
 
 ```mermaid
 flowchart TD

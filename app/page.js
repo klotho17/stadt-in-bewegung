@@ -2,13 +2,14 @@
 
 import { getAllObjects } from './api/get-record-all'; // API-call for all objects
 import { prepareTreemapData } from './utils/treemapdata'; // prepare data from API and custom files for visualisation
-import { getTreemapImages } from './utils/treemapimages'; // get ojbect images from URL
+import { getTreemapImages } from './utils/treemapimages'; // get object images from URL
 import { createTreemap } from './utils/treemap'; // create the treemap visualisation
-import YearRangeSlider from './components/YearRangeSlider'
+import YearRangeSlider from './components/YearRangeSlider' // slider for year range with range setting
 
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Loading from './loading';
 
 export default function StartPage() {
   const [objects, setObjects] = useState(null);
@@ -39,6 +40,7 @@ export default function StartPage() {
 
   useEffect(() => {
     async function loadData() {
+      console.log("Loading data");
       try {
         const objects = await getAllObjects();
         setObjects(objects);
@@ -47,7 +49,7 @@ export default function StartPage() {
         // Calculate actual year range from given data
         const years = objects
           .flatMap(item => Array.isArray(item.year) ? item.year : [item.year])
-          .filter(year => typeof year === "number" && !isNaN(year) && year > 0); // custom files are 0 currenty
+          .filter(year => typeof year === "number" && !isNaN(year) && year > 0); // custom files currenty have value 0
 
         console.log("All Elements in Year Array of Objects", years);
 
@@ -68,7 +70,6 @@ export default function StartPage() {
         // treemap data with all years and topics
         const initialData = prepareTreemapData(objects, null);
         setInitialData(initialData);
-        //setTreemapData(initialData);
 
         // Calculate and set the maxTotalValue once
         const calculatedMax = initialData.reduce((sum, d) => sum + (Number(d.value) || 0), 0);
@@ -76,8 +77,10 @@ export default function StartPage() {
 
         console.log("Objects used for Treemap", objects);
         console.log("Initial Treemap Data with Topic Frequency", initialData);
+        console.log("Max Total Value for Treemap", calculatedMax);
         setLoading(false);
       } catch (err) {
+        console.log("Error loading data:", err);
         setError(err.message);
         setLoading(false);
       }
@@ -98,7 +101,7 @@ export default function StartPage() {
   // fetch images once on initial load
   useEffect(() => {
     if (!objects || !initialData) return;
-    setTopicImages({}); // clear previous images
+    //setTopicImages({}); // clear previous images
     getTreemapImages(
       objects,
       initialData.map(d => d.name),
@@ -110,7 +113,7 @@ export default function StartPage() {
     );
   }, [objects, initialData]);
 
-  // Create treemap with images, container width and year range in URL
+  // Create treemap with images, container width and save year range in URL
   useEffect(() => {
     if (treemapData && treemapContainerRef.current && maxTotalValue !== null) {
       createTreemap(
@@ -156,13 +159,14 @@ export default function StartPage() {
     }
   }, [from, to]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading />;
   if (error) return <div>Error: {error}</div>;
 
   // --------------------------  Visual Website Return ------------------------------- //
   return (
     <div className="start-page">
       <h1>Audiovisuelles Kulturerbe der Städte in Bewegung 1977-1994</h1>
+
       {/* Year Range Filter */}
       <div>
         <YearRangeSlider
@@ -175,7 +179,8 @@ export default function StartPage() {
 
       {/* Treemap Container */}
       <div className="treemap-wrapper">
-        <div id="treemap-container" ref={treemapContainerRef} style={{ width: "100%" }} />      </div>
+        <div id="treemap-container" ref={treemapContainerRef} style={{ width: "100%" }} />
+      </div>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
 // Helper function to wrap text into lines that fit the rectangle width
-// based on smallest font size (10)
+// based on smallest font size
 function wrapText(text, maxWidth, fontSize = 12) {
   const words = text.split(' ');
   const lines = [];
@@ -58,9 +58,9 @@ export function createTreemap(containerId, data, onTopicClick, topicImages = {},
 
   const root = d3.hierarchy({
     name: "root",
-    children: data.map(d => ({ ...d })) // Clone objects
+    children: data.map(d => ({ ...d })) // clone objects
   })
-    .sum(d => d.value || 0) // Simpler value handling
+    .sum(d => d.value || 0)
     .sort((a, b) => a.value - b.value); // reversed: from smallest to biggest
 
   // Create treemap layout
@@ -87,7 +87,7 @@ export function createTreemap(containerId, data, onTopicClick, topicImages = {},
     .attr('fill', function (d, i) {
       const imgUrl = topicImages[d.data.name];
       if (imgUrl) {
-        // Define a unique pattern for each topic
+        // use a topic img as background
         const patternId = `img-pattern-${i}`;
         d3.select(this.ownerSVGElement)
           .append("defs")
@@ -126,6 +126,7 @@ export function createTreemap(containerId, data, onTopicClick, topicImages = {},
       const fontSize = Math.max(10, d.data.value);
       const maxWidth = d.x1 - d.x0 - 10;
       //const lines = wrapText(`${d.data.name}`, maxWidth, fontSize);
+      //d.data.value not correct...
       const lines = wrapText(`${d.data.name} [${d.data.value}]`, maxWidth, fontSize);
       lines.forEach((line, i) => {
         d3.select(this)
@@ -178,7 +179,7 @@ cells
     // Remove overlay
     d3.select(this).select('.hover-overlay').remove();
     
-    // Restore text
+    // Restore text - stays in front until neighboring tiles overwrite
     d3.select(this).select('text')
       .transition()
       .duration(200)

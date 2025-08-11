@@ -68,12 +68,12 @@ li > a {
   color: white;
 }
 
-/*remove bullet point for list*/
+/* remove bullet point for list */
 li {
   list-style: none;
 }
 
-/* ----- Main Page start-page */
+/* ----- Main Page - start-page */
 .start-page {
   padding-top: 2rem;
 }
@@ -86,7 +86,7 @@ li {
   color:rgb(214, 214, 214);
 }
 
-/* ----- Filtered Topics Page topic-page ----- */
+/* ----- Filtered Topics Page - topic-page ----- */
 .topic-page {
   padding: 2rem;
     padding-right: 200px; /* Adjust to side navigation */
@@ -123,7 +123,7 @@ li {
   }
 }
 
-/* ----- Single Object Page object-page ----- */
+/* ----- Single Object Page - object-page ----- */
 .object-page {
   padding: 2rem;
   padding-right: 200px; /* Adjust to side navigation */
@@ -139,7 +139,7 @@ li {
   text-decoration: underline;
 }
 
-/* ----- Project Page projekt-page ----- */
+/* ----- Project Page - projekt-page ----- */
 .project-page {
   padding: 2rem;
   padding-right: 40%;
@@ -155,7 +155,7 @@ footer {
   font-size: 0.95rem;
 }
 
-/* Titles and paragraphs */
+/* Titles */
 
 h1 {
   font-size: 1.2rem;
@@ -282,7 +282,7 @@ h2 {
   text-decoration: underline;
 }
 
-/* treemap */
+/* treemap - most of styling in treemap.js */
 
 #treemap-container svg {
   width: 100%;
