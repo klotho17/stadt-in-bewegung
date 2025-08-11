@@ -86,6 +86,15 @@ export default function TopicPage() {
     return () => { cancelled = true; };
   }, [inRange]);
 
+  // reload page if stuck in loading state
+  useEffect(() => {
+    if (!loading) return;
+    const timeout = setTimeout(() => {
+      window.location.reload();
+    }, 5000);
+    return () => clearTimeout(timeout);
+  }, [loading]);
+
   // --------------------------  Visual Website Return ------------------------------- //
 
   if (loading) return <div>Themenseite wird geladen...</div>;

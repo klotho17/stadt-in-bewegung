@@ -45,6 +45,15 @@ export default function ObjectPage() {
     return () => { cancelled = true; };
   }, [entry, decodedId]);
 
+  // reload page if stuck in loading state
+  useEffect(() => {
+    if (!loading) return;
+    const timeout = setTimeout(() => {
+      window.location.reload();
+    }, 5000);
+    return () => clearTimeout(timeout);
+  }, [loading]);
+
   // --------------------------  Visual Website Return ------------------------------- //
 
   if (loading) return <div>Videoseite wird geladen...</div>;

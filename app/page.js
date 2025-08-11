@@ -159,11 +159,20 @@ export default function StartPage() {
     }
   }, [from, to]);
 
+  // reload page if stuck in loading state
+  useEffect(() => {
+    if (!loading) return;
+    const timeout = setTimeout(() => {
+      window.location.reload();
+    }, 5000);
+    return () => clearTimeout(timeout);
+  }, [loading]);
+
   // --------------------------  Visual Website Return ------------------------------- //
-  
+
   if (loading) return <Loading />;
   if (error) return <div>Error: {error}</div>;
-  
+
   return (
     <div className="start-page">
       <h1>Audiovisuelles Kulturerbe der Städte in Bewegung 1977-1994</h1>
