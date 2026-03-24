@@ -150,7 +150,10 @@ cells
   .on('mouseover', function(event, d) {
     // Bring group to front
     this.parentNode.appendChild(this);
-    
+
+    // Remove any existing overlays (robustness)
+    d3.select(this).selectAll('.hover-overlay').remove();
+
     // Get the text element and its bounding box
     const textElem = d3.select(this).select('text').node();
     let textBoxWidth = d.x1 - d.x0; // fallback to rect width
@@ -167,13 +170,13 @@ cells
       .attr('width', textBoxWidth + 20)
       .attr('height', d.y1 - d.y0 + 20)
       .attr('fill', 'rgba(0, 0, 0, 0.85)')
-      .attr('pointer-events', 'none') // Allow clicks to pass through
+      .attr('pointer-events', 'none'); // Allow clicks to pass through
 
     // Enhance text
     d3.select(this).select('text')
       .transition()
       .duration(200)
-      .style('font-size', `${Math.max(14, d.data.value * 1.2)}px`)
+      .style('font-size', `${Math.max(14, d.data.value * 1.2)}px`);
   })
   .on('mouseout', function(event, d) {
     // Remove overlay
