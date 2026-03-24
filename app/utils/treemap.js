@@ -145,15 +145,13 @@ export function createTreemap(containerId, data, onTopicClick, topicImages = {},
     .style('text-shadow', '1px 1px 4px #000000')
     .style('pointer-events', 'none')
 
+/*
 // Mouse hover functionality
 cells
   .on('mouseover', function(event, d) {
     // Bring group to front
     this.parentNode.appendChild(this);
-
-    // Remove any existing overlays (robustness)
-    d3.select(this).selectAll('.hover-overlay').remove();
-
+    
     // Get the text element and its bounding box
     const textElem = d3.select(this).select('text').node();
     let textBoxWidth = d.x1 - d.x0; // fallback to rect width
@@ -162,31 +160,45 @@ cells
       textBoxWidth = Math.max(bbox.width + 20, d.x1 - d.x0); // ensure at least rect width
     }
 
+    // Remove any existing overlay first to avoid duplicates
+    d3.select(this).select('.hover-overlay').remove();
+
     // Create overlay that covers entire tile (including borders)
-    d3.select(this).insert('rect', 'text')
+    d3.select(this).insert('rect', ':first-child') // Insert at beginning to ensure it's behind everything
       .attr('class', 'hover-overlay')
       .attr('x', -10)
       .attr('y', -10)
       .attr('width', textBoxWidth + 20)
       .attr('height', d.y1 - d.y0 + 20)
       .attr('fill', 'rgba(0, 0, 0, 0.85)')
-      .attr('pointer-events', 'none'); // Allow clicks to pass through
+      .attr('pointer-events', 'none') // Allow clicks to pass through
+      .attr('style', 'pointer-events: none;'); // Ensure it's set via style as well
 
     // Enhance text
     d3.select(this).select('text')
+      .interrupt() // Stop any ongoing transitions
       .transition()
       .duration(200)
-      .style('font-size', `${Math.max(14, d.data.value * 1.2)}px`);
+      .style('font-size', `${Math.max(14, d.data.value * 1.2)}px`)
+      .style('position', 'relative')
+      .style('z-index', '2'); // Ensure text stays above overlay
   })
   .on('mouseout', function(event, d) {
-    // Remove overlay
-    d3.select(this).select('.hover-overlay').remove();
+    // Remove overlay immediately
+    const overlay = d3.select(this).select('.hover-overlay');
+    if (!overlay.empty()) {
+      overlay.remove();
+    }
     
     // Restore text - stays in front until neighboring tiles overwrite
     d3.select(this).select('text')
+      .interrupt() // Stop any ongoing transitions
       .transition()
       .duration(200)
       .style('font-size', `${Math.max(12, d.data.value)}px`)
-      .style('filter', 'none');
+      .style('filter', 'none')
+      .style('position', '')
+      .style('z-index', '');
   });
+*/
 }
