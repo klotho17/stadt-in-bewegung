@@ -53,9 +53,9 @@ export default function SideNav({ entry, topic, from, to, filteredItems, inRange
             {entry.topic
               .filter(t => t !== topic)
               .map(t => (
-                <a key={t} href={`/themen/${t}`}>
+                <Link key={t} href={`/themen/${t}`}>
                   {t}
-                </a>
+                </Link>
               ))
               .reduce((prev, curr) => [prev, " ", curr])}
           </li>
